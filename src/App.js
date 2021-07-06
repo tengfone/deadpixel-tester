@@ -1,23 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
+import React, { useCallback } from 'react';
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { Button } from 'react-bootstrap';
+
 
 function App() {
+  const handle = useFullScreenHandle();
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Button variant="light" size="lg" onClick={handle.enter}>Fullscreen</Button>{' '}
+      <div className="About">
+        <h5>Made with ❤️ by <a href="https://www.github.com/tengfone" target="_blank">Teng Fone</a></h5>
+      </div>
+      <FullScreen handle={handle}>
+        <div className='App' style={{ cursor: 'none' }}>
+        </div>
+      </FullScreen>
     </div>
   );
 }
