@@ -1,0 +1,24 @@
+export const PATTERNS = [
+  { id: "black", name: "Black", kind: "solid", color: "#000000", hint: "Bright specks here are stuck pixels." },
+  { id: "white", name: "White", kind: "solid", color: "#ffffff", hint: "Dark specks here are dead pixels." },
+  { id: "red", name: "Red", kind: "solid", color: "#ff0000", hint: "Look for pixels that stay dark or shift toward another primary." },
+  { id: "green", name: "Green", kind: "solid", color: "#00ff00", hint: "Look for pixels that stay dark or shift toward another primary." },
+  { id: "blue", name: "Blue", kind: "solid", color: "#0000ff", hint: "Look for pixels that stay dark or shift toward another primary." },
+  { id: "flash", name: "Stuck pixel", kind: "flash", hint: "A stuck pixel keeps its colour while the field blinks." },
+  { id: "ramp-h", name: "Horizontal ramp", kind: "ramp-h", hint: "Bands or steps in the ramp mean uneven backlight or bad colour steps." },
+  { id: "ramp-v", name: "Vertical ramp", kind: "ramp-v", hint: "Bands or steps in the ramp mean uneven backlight or bad colour steps." },
+  { id: "bars", name: "Colour bars", kind: "bars", hint: "Each bar should be flat. A speck that breaks one bar is a bad pixel." },
+  { id: "grid-black", name: "Grid on black", kind: "grid", base: "#000000", line: "rgba(255,255,255,0.9)", hint: "Missing intersections are dropped pixels." },
+  { id: "grid-white", name: "Grid on white", kind: "grid", base: "#ffffff", line: "rgba(0,0,0,0.88)", hint: "Broken lines are dropped or stuck pixels." },
+];
+
+export const BAR_COLOURS = [
+  "#ffffff",
+  "#ffff00",
+  "#00ffff",
+  "#00ff00",
+  "#ff00ff",
+  "#ff0000",
+  "#0000ff",
+  "#000000",
+];
