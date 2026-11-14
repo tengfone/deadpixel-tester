@@ -20,7 +20,7 @@ A pixel that stays dark on white is dead. A pixel that stays bright on black, or
 - Click or tap the plate for the next pattern
 - Swipe left for the next plate, swipe right for the previous one
 - Arrow keys move, Space advances, F requests full screen, Esc stops
-- Move the pointer to bring the control bar back. It hides so it does not cover the pixels you are checking
+- Move the pointer, or on a touch screen tap near the top or bottom edge, to bring the control bar back. It hides so it does not cover the pixels you are checking
 
 On a phone the stage is the full viewport even when the browser will not enter full screen.
 

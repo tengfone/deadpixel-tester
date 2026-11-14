@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./App.css";
 import { BAR_COLOURS, PATTERNS } from "./patterns.js";
 
-const HUD_MS = 1600;
+const HUD_MS = 3000;
+const EDGE_ZONE = 0.15;
 
 function fsElement() {
   return document.fullscreenElement || document.webkitFullscreenElement || null;
@@ -182,7 +183,13 @@ export default function App() {
     const dy = event.clientY - touchStart.current.y;
     touchStart.current = null;
     if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
-      step(1);
+      const edge = Math.max(56, window.innerHeight * EDGE_ZONE);
+      const nearEdge = event.clientY < edge || event.clientY > window.innerHeight - edge;
+      if (event.pointerType !== "mouse" && nearEdge) {
+        revealHud();
+      } else {
+        step(1);
+      }
       return;
     }
     if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) {
@@ -218,7 +225,8 @@ export default function App() {
           </div>
           <ul className="controls">
             <li>
-              Click or tap the screen for the next plate. Swipe to move back.
+              Click or tap the screen for the next plate. Swipe to move back. On a touch
+              screen, tap near the top or bottom edge to show the controls.
             </li>
             <li>
               <kbd>←</kbd> <kbd>→</kbd> move. <kbd>Space</kbd> advances. <kbd>Esc</kbd> stops. <kbd>F</kbd> fills the screen.
@@ -240,7 +248,11 @@ export default function App() {
           onPointerCancel={() => {
             touchStart.current = null;
           }}
-          onPointerMove={revealHud}
+          onPointerMove={(event) => {
+            if (event.pointerType === "mouse") {
+              revealHud();
+            }
+          }}
         >
           <Plate pattern={pattern} />
           <p className="sr-only" aria-live="polite">
