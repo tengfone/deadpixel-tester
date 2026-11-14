@@ -25,7 +25,11 @@ function fsElement() {
 }
 
 function fsSupported() {
-  return Boolean(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+  const root = document.documentElement;
+  return Boolean(
+    (document.fullscreenEnabled && root.requestFullscreen) ||
+      (document.webkitFullscreenEnabled && root.webkitRequestFullscreen),
+  );
 }
 
 function settle(result) {
