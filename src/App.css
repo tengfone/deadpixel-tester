@@ -2,7 +2,8 @@
   min-height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  padding: 28px 22px 22px;
+  padding: max(28px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right))
+    max(22px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left));
   background:
     radial-gradient(1200px 500px at 50% -10%, rgba(228, 163, 34, 0.16), transparent 55%),
     #171910;
@@ -184,8 +185,8 @@
 }
 
 .chip {
-  top: 18px;
-  left: 18px;
+  top: max(18px, env(safe-area-inset-top));
+  left: max(18px, env(safe-area-inset-left));
   display: grid;
   gap: 4px;
   max-width: min(420px, calc(100vw - 36px));
@@ -216,7 +217,7 @@
 
 .dock {
   left: 50%;
-  bottom: 16px;
+  bottom: max(16px, env(safe-area-inset-bottom));
   transform: translateX(-50%) translateY(12px);
   display: flex;
   gap: 8px;
@@ -247,6 +248,10 @@
 
 .dock button:hover {
   border-color: #e4a322;
+}
+
+.dock-short {
+  display: none;
 }
 
 .dock .count {
@@ -294,7 +299,8 @@
 
 @media (max-width: 640px) {
   .intro {
-    padding: 20px 16px 16px;
+    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+      max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
   }
 
   .foot {
@@ -308,5 +314,37 @@
 
   .dock button {
     padding: 10px 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .dock {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .dock button {
+    flex: 1 1 auto;
+    padding: 10px 8px;
+  }
+
+  .dock .count {
+    min-width: 0;
+  }
+
+  .dock-long {
+    display: none;
+  }
+
+  .dock-short {
+    display: inline;
+  }
+}
+
+@media (max-width: 359px) {
+  .dock .count {
+    display: none;
   }
 }

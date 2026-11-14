@@ -253,14 +253,16 @@ export default function App() {
             {labelOn && <span>{pattern.hint}</span>}
           </div>
           <div className="dock">
-            <button type="button" onClick={() => step(-1)}>
-              Previous
+            <button type="button" aria-label="Previous" onClick={() => step(-1)}>
+              <span className="dock-long">Previous</span>
+              <span className="dock-short" aria-hidden="true">←</span>
             </button>
             <div className="count">
               {index + 1} / {PATTERNS.length}
             </div>
-            <button type="button" onClick={() => step(1)}>
-              Next
+            <button type="button" aria-label="Next" onClick={() => step(1)}>
+              <span className="dock-long">Next</span>
+              <span className="dock-short" aria-hidden="true">→</span>
             </button>
             {canFullscreen && (
               <button type="button" onClick={() => (fullscreen ? exitFs() : requestFs())}>
