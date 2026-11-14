@@ -8,9 +8,15 @@ export const PATTERNS = [
   { id: "ramp-h", name: "Horizontal ramp", kind: "ramp-h", hint: "Bands or steps in the ramp mean uneven backlight or bad colour steps." },
   { id: "ramp-v", name: "Vertical ramp", kind: "ramp-v", hint: "Bands or steps in the ramp mean uneven backlight or bad colour steps." },
   { id: "bars", name: "Colour bars", kind: "bars", hint: "Each bar should be flat. A speck that breaks one bar is a bad pixel." },
-  { id: "grid-black", name: "Grid on black", kind: "grid", base: "#000000", line: "rgba(255,255,255,0.9)", hint: "Missing intersections are dropped pixels." },
-  { id: "grid-white", name: "Grid on white", kind: "grid", base: "#ffffff", line: "rgba(0,0,0,0.88)", hint: "Broken lines are dropped or stuck pixels." },
+  { id: "grid-black", name: "Grid on black", kind: "grid", base: "#000000", line: "#ffffff", hint: "Lines are one device pixel of full white. Missing intersections are dropped pixels." },
+  { id: "grid-white", name: "Grid on white", kind: "grid", base: "#ffffff", line: "#000000", hint: "Lines are one device pixel of full black. Broken lines are dropped or stuck pixels." },
 ];
+
+// Grid pitch in CSS pixels. The canvas converts it to whole device pixels.
+export const GRID_PITCH = 8;
+
+// 1-based position of the flashing plate, so copy never hardcodes it.
+export const FLASH_PLATE = PATTERNS.findIndex((pattern) => pattern.kind === "flash") + 1;
 
 export const BAR_COLOURS = [
   "#ffffff",

@@ -1,9 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
-import { BAR_COLOURS, PATTERNS } from "./patterns.js";
+import Plate from "./Plate.jsx";
+import { BAR_COLOURS, FLASH_PLATE, PATTERNS } from "./patterns.js";
 
 const HUD_MS = 3000;
 const EDGE_ZONE = 0.15;
+// Cumulative mouse travel, in CSS px, before a hidden dock comes back.
+const MOVE_REVEAL_PX = 8;
+const TAP_SLOP_PX = 12;
+const SWIPE_PX = 48;
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
 function useReducedMotion() {
@@ -62,34 +67,32 @@ function exitFs() {
   }
 }
 
-function Plate({ pattern }) {
-  if (pattern.kind === "solid") {
-    return <div className="plate" style={{ background: pattern.color }} />;
-  }
-  if (pattern.kind === "flash") {
-    return <div className="plate plate-flash" />;
-  }
-  if (pattern.kind === "ramp-h") {
-    return <div className="plate plate-ramp-h" />;
-  }
-  if (pattern.kind === "ramp-v") {
-    return <div className="plate plate-ramp-v" />;
-  }
-  if (pattern.kind === "bars") {
-    return (
-      <div className="plate plate-bars">
-        {BAR_COLOURS.map((color) => (
-          <span key={color} style={{ background: color }} />
-        ))}
-      </div>
-    );
-  }
+// A pointer click drops focus afterwards, so a clicked dock button does not
+// keep the dock pinned open through :focus-within. Keyboard activation
+// (detail 0) keeps focus where it is.
+function DockButton({ onClick, ...props }) {
   return (
-    <div
-      className="plate plate-grid"
-      style={{ "--grid-base": pattern.base, "--grid-line": pattern.line }}
+    <button
+      type="button"
+      {...props}
+      onClick={(event) => {
+        if (event.detail > 0) {
+          event.currentTarget.blur();
+        }
+        onClick(event);
+      }}
     />
   );
+}
+
+function flashWarning(included, reducedMotion) {
+  if (!included) {
+    return "The black and white blink is left out of the test.";
+  }
+  if (reducedMotion) {
+    return `Plate ${FLASH_PLATE} is shown as a still black and white split because reduced motion is on.`;
+  }
+  return `Warning: plate ${FLASH_PLATE} flips between black and white every 0.7 seconds. Untick this if flashing light affects you. You can also skip it during the test.`;
 }
 
 export default function App() {
@@ -99,13 +102,23 @@ export default function App() {
   const [labelOn, setLabelOn] = useState(true);
   const [canFullscreen] = useState(fsSupported);
   const [fullscreen, setFullscreen] = useState(() => Boolean(fsElement()));
+  // null until the visitor touches the checkbox, so the default keeps
+  // following the reduced-motion preference.
+  const [flashChoice, setFlashChoice] = useState(null);
   const hideTimer = useRef(0);
   const touchStart = useRef(null);
+  const mouseTravel = useRef({ last: null, distance: 0 });
   const startButton = useRef(null);
+  const nextButton = useRef(null);
   const returnFocus = useRef(false);
 
   const reducedMotion = useReducedMotion();
-  const pattern = PATTERNS[index];
+  const includeFlash = flashChoice ?? !reducedMotion;
+  const plates = useMemo(
+    () => (includeFlash ? PATTERNS : PATTERNS.filter((item) => item.kind !== "flash")),
+    [includeFlash],
+  );
+  const pattern = plates[index] ?? plates[0];
   const hint = reducedMotion && pattern.stillHint ? pattern.stillHint : pattern.hint;
 
   const armHide = useCallback(() => {
@@ -113,24 +126,46 @@ export default function App() {
     hideTimer.current = window.setTimeout(() => {
       setHudOpen(false);
       setLabelOn(false);
+      mouseTravel.current = { last: null, distance: 0 };
     }, HUD_MS);
   }, []);
 
   const revealHud = useCallback(() => {
     setHudOpen(true);
+    setLabelOn(true);
     armHide();
   }, [armHide]);
 
   const step = useCallback(
     (delta) => {
-      const count = PATTERNS.length;
+      const count = plates.length;
       setIndex((current) => (current + delta + count) % count);
       setLabelOn(true);
       setHudOpen(true);
       armHide();
     },
-    [armHide],
+    [armHide, plates.length],
   );
+
+  // Drop the flashing plate mid-test and land on the plate that followed it.
+  const skipFlash = useCallback(() => {
+    const at = plates.findIndex((item) => item.kind === "flash");
+    setFlashChoice(false);
+    if (at !== -1) {
+      setIndex(at % (plates.length - 1));
+    }
+    setLabelOn(true);
+    setHudOpen(true);
+    armHide();
+  }, [armHide, plates]);
+
+  const toggleFs = useCallback(() => {
+    if (fsElement()) {
+      exitFs();
+    } else {
+      requestFs();
+    }
+  }, []);
 
   const stop = useCallback(() => {
     window.clearTimeout(hideTimer.current);
@@ -142,12 +177,14 @@ export default function App() {
 
   const start = useCallback(() => {
     requestFs();
+    // Freeze the choice so a preference change mid-test cannot reshuffle plates.
+    setFlashChoice(includeFlash);
     setIndex(0);
     setRunning(true);
     setLabelOn(true);
     setHudOpen(true);
     armHide();
-  }, [armHide]);
+  }, [armHide, includeFlash]);
 
   useEffect(() => {
     if (!running) {
@@ -160,7 +197,13 @@ export default function App() {
       const key = event.key.toLowerCase();
       if (key === "escape") {
         event.preventDefault();
-        stop();
+        // Browsers usually consume Esc to leave full screen themselves. If one
+        // passes it through, leave full screen first and stop on the next Esc.
+        if (fsElement()) {
+          exitFs();
+        } else {
+          stop();
+        }
         return;
       }
       if (key === " " && event.target.closest?.("button")) {
@@ -173,12 +216,13 @@ export default function App() {
         event.preventDefault();
         step(-1);
       } else if (key === "f") {
-        requestFs();
+        event.preventDefault();
+        toggleFs();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [running, step, stop]);
+  }, [running, step, stop, toggleFs]);
 
   useEffect(() => {
     const onFullscreen = () => {
@@ -206,21 +250,26 @@ export default function App() {
   }, [running]);
 
   const onPointerDown = (event) => {
-    if (event.target.closest(".dock")) {
+    // Only the primary button of the primary pointer starts a tap or swipe:
+    // right and middle clicks, and a second finger, never change the plate.
+    if (event.target.closest(".dock") || !event.isPrimary || event.button !== 0) {
       return;
     }
-    touchStart.current = { x: event.clientX, y: event.clientY };
+    touchStart.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
   };
 
   const onPointerUp = (event) => {
-    if (event.target.closest(".dock") || !touchStart.current) {
-      touchStart.current = null;
+    const origin = touchStart.current;
+    if (!origin || event.pointerId !== origin.id) {
       return;
     }
-    const dx = event.clientX - touchStart.current.x;
-    const dy = event.clientY - touchStart.current.y;
     touchStart.current = null;
-    if (Math.abs(dx) < 12 && Math.abs(dy) < 12) {
+    if (event.target.closest(".dock")) {
+      return;
+    }
+    const dx = event.clientX - origin.x;
+    const dy = event.clientY - origin.y;
+    if (Math.abs(dx) < TAP_SLOP_PX && Math.abs(dy) < TAP_SLOP_PX) {
       const edge = Math.max(56, window.innerHeight * EDGE_ZONE);
       const nearEdge = event.clientY < edge || event.clientY > window.innerHeight - edge;
       if (event.pointerType !== "mouse" && nearEdge) {
@@ -230,8 +279,30 @@ export default function App() {
       }
       return;
     }
-    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) {
+    if (Math.abs(dx) > SWIPE_PX && Math.abs(dx) > Math.abs(dy)) {
       step(dx < 0 ? 1 : -1);
+    }
+  };
+
+  const onPointerMove = (event) => {
+    if (event.pointerType !== "mouse") {
+      return;
+    }
+    if (hudOpen) {
+      armHide();
+      return;
+    }
+    // A hidden dock only returns after deliberate movement, so a nudged desk
+    // or mouse does not cover the pixels being checked.
+    const travel = mouseTravel.current;
+    const point = { x: event.clientX, y: event.clientY };
+    if (travel.last) {
+      travel.distance += Math.hypot(point.x - travel.last.x, point.y - travel.last.y);
+    }
+    travel.last = point;
+    if (travel.distance > MOVE_REVEAL_PX) {
+      mouseTravel.current = { last: null, distance: 0 };
+      revealHud();
     }
   };
 
@@ -258,23 +329,35 @@ export default function App() {
               <button ref={startButton} className="start" type="button" onClick={start}>
                 Start test
               </button>
-              <span className="plate-count">{PATTERNS.length} plates</span>
+              <span className="plate-count">{plates.length} plates</span>
+            </div>
+            <div className="flash-setting">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={includeFlash}
+                  onChange={(event) => setFlashChoice(event.target.checked)}
+                  aria-describedby="flash-warning"
+                />
+                Include flashing plate
+              </label>
+              <p id="flash-warning" className={includeFlash && !reducedMotion ? "warning" : undefined}>
+                {flashWarning(includeFlash, reducedMotion)}
+              </p>
             </div>
           </div>
           <ul className="controls">
             <li>
-              Click or tap the screen for the next plate. Swipe to move back. On a touch
-              screen, tap near the top or bottom edge to show the controls.
+              Click or tap the screen for the next plate. Swipe left for the next plate, right
+              for the previous one. On a touch screen, tap near the top or bottom edge to show
+              the controls.
             </li>
             <li>
-              <kbd>←</kbd> <kbd>→</kbd> move. <kbd>Space</kbd> advances. <kbd>F</kbd> fills the screen.
+              <kbd>←</kbd> <kbd>→</kbd> move. <kbd>Space</kbd> advances. <kbd>F</kbd> toggles full
+              screen.
               In full screen, <kbd>Esc</kbd> leaves full screen; press <kbd>Esc</kbd> again to stop.
             </li>
             <li>The controls hide so they do not cover the pixels you are checking.</li>
-            <li>
-              Plate 6 blinks black and white. If flashing light affects you, skip it, or turn on
-              reduced motion to get a still split instead.
-            </li>
           </ul>
         </div>
         <footer className="foot">
@@ -288,53 +371,55 @@ export default function App() {
           className={hudOpen ? "stage hud-open" : "stage"}
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
-          onPointerCancel={() => {
-            touchStart.current = null;
-          }}
-          onPointerMove={(event) => {
-            if (event.pointerType === "mouse") {
-              revealHud();
+          onPointerCancel={(event) => {
+            if (touchStart.current?.id === event.pointerId) {
+              touchStart.current = null;
             }
           }}
+          onPointerMove={onPointerMove}
+          onContextMenu={(event) => event.preventDefault()}
         >
           <Plate pattern={pattern} />
           <p className="sr-only" aria-live="polite">
-            {pattern.name}. {hint} Plate {index + 1} of {PATTERNS.length}.
+            {pattern.name}. {hint} Plate {index + 1} of {plates.length}.
           </p>
-          <div className="chip">
+          <div className="chip" aria-hidden="true">
             <strong>
               {String(index + 1).padStart(2, "0")} {pattern.name}
             </strong>
             {labelOn && <span>{hint}</span>}
           </div>
-          <div
-            className="dock"
-            onFocus={revealHud}
-            onClick={(event) => {
-              if (event.detail > 0) {
-                event.target.closest("button")?.blur();
-              }
-            }}
-          >
-            <button type="button" aria-label="Previous" onClick={() => step(-1)}>
+          <div className="dock" onFocus={revealHud}>
+            <DockButton aria-label="Previous" onClick={() => step(-1)}>
               <span className="dock-long">Previous</span>
               <span className="dock-short" aria-hidden="true">←</span>
-            </button>
+            </DockButton>
             <div className="count">
-              {index + 1} / {PATTERNS.length}
+              {index + 1} / {plates.length}
             </div>
-            <button type="button" aria-label="Next" onClick={() => step(1)}>
+            <DockButton ref={nextButton} aria-label="Next" onClick={() => step(1)}>
               <span className="dock-long">Next</span>
               <span className="dock-short" aria-hidden="true">→</span>
-            </button>
-            {canFullscreen && (
-              <button type="button" onClick={() => (fullscreen ? exitFs() : requestFs())}>
-                {fullscreen ? "Exit full screen" : "Full screen"}
-              </button>
+            </DockButton>
+            {pattern.kind === "flash" && !reducedMotion && (
+              <DockButton
+                onClick={(event) => {
+                  skipFlash();
+                  // The button disappears with the plate; keep keyboard focus in the dock.
+                  if (event.detail === 0) {
+                    nextButton.current?.focus();
+                  }
+                }}
+              >
+                Skip flashing
+              </DockButton>
             )}
-            <button type="button" onClick={stop}>
-              Stop
-            </button>
+            {canFullscreen && (
+              <DockButton onClick={toggleFs}>
+                {fullscreen ? "Exit full screen" : "Full screen"}
+              </DockButton>
+            )}
+            <DockButton onClick={stop}>Stop</DockButton>
           </div>
         </div>
       )}
