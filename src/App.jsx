@@ -307,7 +307,15 @@ export default function App() {
             </strong>
             {labelOn && <span>{hint}</span>}
           </div>
-          <div className="dock" onFocus={revealHud}>
+          <div
+            className="dock"
+            onFocus={revealHud}
+            onClick={(event) => {
+              if (event.detail > 0) {
+                event.target.closest("button")?.blur();
+              }
+            }}
+          >
             <button type="button" aria-label="Previous" onClick={() => step(-1)}>
               <span className="dock-long">Previous</span>
               <span className="dock-short" aria-hidden="true">←</span>
