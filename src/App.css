@@ -231,7 +231,8 @@
   max-width: calc(100vw - 24px);
 }
 
-.hud-open .dock {
+.hud-open .dock,
+.dock:focus-within {
   opacity: 1;
   transform: translateX(-50%);
   pointer-events: auto;

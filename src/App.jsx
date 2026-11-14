@@ -82,6 +82,8 @@ export default function App() {
   const [fullscreen, setFullscreen] = useState(() => Boolean(fsElement()));
   const hideTimer = useRef(0);
   const touchStart = useRef(null);
+  const startButton = useRef(null);
+  const returnFocus = useRef(false);
 
   const pattern = PATTERNS[index];
 
@@ -111,6 +113,7 @@ export default function App() {
 
   const stop = useCallback(() => {
     window.clearTimeout(hideTimer.current);
+    returnFocus.current = true;
     setRunning(false);
     setHudOpen(true);
     exitFs();
@@ -167,6 +170,13 @@ export default function App() {
 
   useEffect(() => () => window.clearTimeout(hideTimer.current), []);
 
+  useEffect(() => {
+    if (!running && returnFocus.current) {
+      returnFocus.current = false;
+      startButton.current?.focus();
+    }
+  }, [running]);
+
   const onPointerDown = (event) => {
     if (event.target.closest(".dock")) {
       return;
@@ -217,7 +227,7 @@ export default function App() {
               or bright on black, is dead or stuck.
             </p>
             <div className="actions">
-              <button className="start" type="button" onClick={start}>
+              <button ref={startButton} className="start" type="button" onClick={start}>
                 Start test
               </button>
               <span className="plate-count">{PATTERNS.length} plates</span>
@@ -264,7 +274,7 @@ export default function App() {
             </strong>
             {labelOn && <span>{pattern.hint}</span>}
           </div>
-          <div className="dock">
+          <div className="dock" onFocus={revealHud}>
             <button type="button" aria-label="Previous" onClick={() => step(-1)}>
               <span className="dock-long">Previous</span>
               <span className="dock-short" aria-hidden="true">←</span>
