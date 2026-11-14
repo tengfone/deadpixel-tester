@@ -4,7 +4,7 @@ export const PATTERNS = [
   { id: "red", name: "Red", kind: "solid", color: "#ff0000", hint: "Look for pixels that stay dark or shift toward another primary." },
   { id: "green", name: "Green", kind: "solid", color: "#00ff00", hint: "Look for pixels that stay dark or shift toward another primary." },
   { id: "blue", name: "Blue", kind: "solid", color: "#0000ff", hint: "Look for pixels that stay dark or shift toward another primary." },
-  { id: "flash", name: "Stuck pixel", kind: "flash", hint: "A stuck pixel keeps its colour while the field blinks." },
+  { id: "flash", name: "Stuck pixel", kind: "flash", hint: "A stuck pixel keeps its colour while the field blinks. Skip ahead if flashing light affects you.", stillHint: "Reduced motion is on, so this is a still black and white split. A speck that does not match its half is stuck." },
   { id: "ramp-h", name: "Horizontal ramp", kind: "ramp-h", hint: "Bands or steps in the ramp mean uneven backlight or bad colour steps." },
   { id: "ramp-v", name: "Vertical ramp", kind: "ramp-v", hint: "Bands or steps in the ramp mean uneven backlight or bad colour steps." },
   { id: "bars", name: "Colour bars", kind: "bars", hint: "Each bar should be flat. A speck that breaks one bar is a bad pixel." },

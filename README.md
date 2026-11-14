@@ -12,7 +12,7 @@ Live demo: [deadpixel-tester.vercel.app](https://deadpixel-tester.vercel.app/)
 4. Primary colour bars
 5. A fine grid on black and on white
 
-A pixel that stays dark on white is dead. A pixel that stays bright on black, or keeps one colour through the blink, is stuck. Bands in a ramp are uneven backlight or bad colour steps. If your system asks for reduced motion, the blink becomes a still black/white split instead of flashing.
+A pixel that stays dark on white is dead. A pixel that stays bright on black, or keeps one colour through the blink, is stuck. Bands in a ramp are uneven backlight or bad colour steps. If your system asks for reduced motion, the blink becomes a still black/white split instead of flashing. If flashing light affects you, turn on reduced motion or skip plate 6.
 
 ## Controls
 

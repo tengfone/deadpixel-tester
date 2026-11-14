@@ -4,6 +4,21 @@ import { BAR_COLOURS, PATTERNS } from "./patterns.js";
 
 const HUD_MS = 3000;
 const EDGE_ZONE = 0.15;
+const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(() => Boolean(window.matchMedia?.(REDUCED_MOTION).matches));
+  useEffect(() => {
+    const media = window.matchMedia?.(REDUCED_MOTION);
+    if (!media?.addEventListener) {
+      return undefined;
+    }
+    const onChange = () => setReduced(media.matches);
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+  return reduced;
+}
 
 function fsElement() {
   return document.fullscreenElement || document.webkitFullscreenElement || null;
@@ -85,7 +100,9 @@ export default function App() {
   const startButton = useRef(null);
   const returnFocus = useRef(false);
 
+  const reducedMotion = useReducedMotion();
   const pattern = PATTERNS[index];
+  const hint = reducedMotion && pattern.stillHint ? pattern.stillHint : pattern.hint;
 
   const armHide = useCallback(() => {
     window.clearTimeout(hideTimer.current);
@@ -250,6 +267,10 @@ export default function App() {
               In full screen, <kbd>Esc</kbd> leaves full screen; press <kbd>Esc</kbd> again to stop.
             </li>
             <li>The controls hide so they do not cover the pixels you are checking.</li>
+            <li>
+              Plate 6 blinks black and white. If flashing light affects you, skip it, or turn on
+              reduced motion to get a still split instead.
+            </li>
           </ul>
         </div>
         <footer className="foot">
@@ -274,13 +295,13 @@ export default function App() {
         >
           <Plate pattern={pattern} />
           <p className="sr-only" aria-live="polite">
-            {pattern.name}. {pattern.hint} Plate {index + 1} of {PATTERNS.length}.
+            {pattern.name}. {hint} Plate {index + 1} of {PATTERNS.length}.
           </p>
           <div className="chip">
             <strong>
               {String(index + 1).padStart(2, "0")} {pattern.name}
             </strong>
-            {labelOn && <span>{pattern.hint}</span>}
+            {labelOn && <span>{hint}</span>}
           </div>
           <div className="dock" onFocus={revealHud}>
             <button type="button" aria-label="Previous" onClick={() => step(-1)}>
