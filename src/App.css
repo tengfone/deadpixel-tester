@@ -192,6 +192,12 @@
   background: rgba(23, 25, 16, 0.78);
   border: 1px solid rgba(228, 163, 34, 0.75);
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms linear;
+}
+
+.hud-open .chip {
+  opacity: 1;
 }
 
 .chip strong {

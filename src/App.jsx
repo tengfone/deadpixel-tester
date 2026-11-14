@@ -45,19 +45,7 @@ export default function App() {
 
   const pattern = PATTERNS[index];
 
-  const revealHud = useCallback(() => {
-    setHudOpen(true);
-    window.clearTimeout(hideTimer.current);
-    hideTimer.current = window.setTimeout(() => setHudOpen(false), HUD_MS);
-  }, []);
-
-  const go = useCallback((next) => {
-    setIndex((current) => {
-      const count = PATTERNS.length;
-      return (next + count) % count;
-    });
-    setLabelOn(true);
-    setHudOpen(true);
+  const armHide = useCallback(() => {
     window.clearTimeout(hideTimer.current);
     hideTimer.current = window.setTimeout(() => {
       setHudOpen(false);
@@ -65,14 +53,24 @@ export default function App() {
     }, HUD_MS);
   }, []);
 
+  const revealHud = useCallback(() => {
+    setHudOpen(true);
+    armHide();
+  }, [armHide]);
+
   const step = useCallback(
     (delta) => {
-      go(index + delta);
+      const count = PATTERNS.length;
+      setIndex((current) => (current + delta + count) % count);
+      setLabelOn(true);
+      setHudOpen(true);
+      armHide();
     },
-    [go, index],
+    [armHide],
   );
 
   const stop = useCallback(async () => {
+    window.clearTimeout(hideTimer.current);
     setRunning(false);
     setHudOpen(true);
     if (document.fullscreenElement) {
@@ -85,7 +83,8 @@ export default function App() {
     setRunning(true);
     setLabelOn(true);
     setHudOpen(true);
-  }, []);
+    armHide();
+  }, [armHide]);
 
   useEffect(() => {
     if (!running) {
