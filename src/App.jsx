@@ -246,7 +246,8 @@ export default function App() {
               screen, tap near the top or bottom edge to show the controls.
             </li>
             <li>
-              <kbd>←</kbd> <kbd>→</kbd> move. <kbd>Space</kbd> advances. <kbd>Esc</kbd> stops. <kbd>F</kbd> fills the screen.
+              <kbd>←</kbd> <kbd>→</kbd> move. <kbd>Space</kbd> advances. <kbd>F</kbd> fills the screen.
+              In full screen, <kbd>Esc</kbd> leaves full screen; press <kbd>Esc</kbd> again to stop.
             </li>
             <li>The controls hide so they do not cover the pixels you are checking.</li>
           </ul>
