@@ -133,18 +133,25 @@ export default function App() {
       return undefined;
     }
     const onKey = (event) => {
-      if (event.key === "Escape") {
+      if (event.altKey || event.ctrlKey || event.metaKey) {
+        return;
+      }
+      const key = event.key.toLowerCase();
+      if (key === "escape") {
         event.preventDefault();
         stop();
         return;
       }
-      if (event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === " ") {
+      if (key === " " && event.target.closest?.("button")) {
+        return;
+      }
+      if (key === "arrowright" || key === "arrowdown" || key === " ") {
         event.preventDefault();
         step(1);
-      } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      } else if (key === "arrowleft" || key === "arrowup") {
         event.preventDefault();
         step(-1);
-      } else if (event.key === "f") {
+      } else if (key === "f") {
         requestFs();
       }
     };
