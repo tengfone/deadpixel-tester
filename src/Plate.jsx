@@ -4,6 +4,16 @@ import { BAR_COLOURS, GRID_PITCH } from "./patterns.js";
 // Draws the grid in device pixels so every line is exactly one physical pixel
 // at full intensity, whatever the devicePixelRatio. A CSS gradient grid is
 // 1 CSS px wide, which is 2+ device pixels on a high-density screen.
+// The device-pixel box is exact where it is right, but some environments
+// (device emulation, for one) report CSS pixels there. Trust it only when it
+// agrees with the CSS size times the ratio, to within snapping.
+function pickSize(devicePixels, estimate) {
+  if (devicePixels && Math.abs(devicePixels - estimate) <= 1) {
+    return devicePixels;
+  }
+  return Math.round(estimate);
+}
+
 export function GridPlate({ base, line, pitch = GRID_PITCH }) {
   const canvasRef = useRef(null);
 
@@ -20,8 +30,8 @@ export function GridPlate({ base, line, pitch = GRID_PITCH }) {
       frame = 0;
       const dpr = window.devicePixelRatio || 1;
       const rect = canvas.getBoundingClientRect();
-      const width = deviceSize?.width || Math.round(rect.width * dpr);
-      const height = deviceSize?.height || Math.round(rect.height * dpr);
+      const width = pickSize(deviceSize?.width, rect.width * dpr);
+      const height = pickSize(deviceSize?.height, rect.height * dpr);
       if (!width || !height) {
         return;
       }
