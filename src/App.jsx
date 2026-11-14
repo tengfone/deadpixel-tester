@@ -4,6 +4,44 @@ import { BAR_COLOURS, PATTERNS } from "./patterns.js";
 
 const HUD_MS = 1600;
 
+function fsElement() {
+  return document.fullscreenElement || document.webkitFullscreenElement || null;
+}
+
+function fsSupported() {
+  return Boolean(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+}
+
+function settle(result) {
+  if (result && typeof result.catch === "function") {
+    result.catch(() => {});
+  }
+}
+
+function requestFs(node = document.documentElement) {
+  const request = node.requestFullscreen || node.webkitRequestFullscreen;
+  if (!request || fsElement()) {
+    return;
+  }
+  try {
+    settle(request.call(node));
+  } catch {
+    // Some browsers throw instead of rejecting when full screen is refused.
+  }
+}
+
+function exitFs() {
+  const exit = document.exitFullscreen || document.webkitExitFullscreen;
+  if (!exit || !fsElement()) {
+    return;
+  }
+  try {
+    settle(exit.call(document));
+  } catch {
+    // Some browsers throw instead of rejecting when full screen is refused.
+  }
+}
+
 function Plate({ pattern }) {
   if (pattern.kind === "solid") {
     return <div className="plate" style={{ background: pattern.color }} />;
@@ -39,7 +77,8 @@ export default function App() {
   const [index, setIndex] = useState(0);
   const [hudOpen, setHudOpen] = useState(true);
   const [labelOn, setLabelOn] = useState(true);
-  const stageRef = useRef(null);
+  const [canFullscreen] = useState(fsSupported);
+  const [fullscreen, setFullscreen] = useState(() => Boolean(fsElement()));
   const hideTimer = useRef(0);
   const touchStart = useRef(null);
 
@@ -69,33 +108,21 @@ export default function App() {
     [armHide],
   );
 
-  const stop = useCallback(async () => {
+  const stop = useCallback(() => {
     window.clearTimeout(hideTimer.current);
     setRunning(false);
     setHudOpen(true);
-    if (document.fullscreenElement) {
-      await document.exitFullscreen().catch(() => {});
-    }
+    exitFs();
   }, []);
 
   const start = useCallback(() => {
+    requestFs();
     setIndex(0);
     setRunning(true);
     setLabelOn(true);
     setHudOpen(true);
     armHide();
   }, [armHide]);
-
-  useEffect(() => {
-    if (!running) {
-      return undefined;
-    }
-    const node = stageRef.current;
-    if (node && node.requestFullscreen && !document.fullscreenElement) {
-      node.requestFullscreen().catch(() => {});
-    }
-    return undefined;
-  }, [running]);
 
   useEffect(() => {
     if (!running) {
@@ -114,10 +141,7 @@ export default function App() {
         event.preventDefault();
         step(-1);
       } else if (event.key === "f") {
-        const node = stageRef.current;
-        if (node && !document.fullscreenElement) {
-          node.requestFullscreen().catch(() => {});
-        }
+        requestFs();
       }
     };
     window.addEventListener("keydown", onKey);
@@ -126,12 +150,18 @@ export default function App() {
 
   useEffect(() => {
     const onFullscreen = () => {
-      if (running && !document.fullscreenElement) {
+      const active = Boolean(fsElement());
+      setFullscreen(active);
+      if (running && !active) {
         revealHud();
       }
     };
     document.addEventListener("fullscreenchange", onFullscreen);
-    return () => document.removeEventListener("fullscreenchange", onFullscreen);
+    document.addEventListener("webkitfullscreenchange", onFullscreen);
+    return () => {
+      document.removeEventListener("fullscreenchange", onFullscreen);
+      document.removeEventListener("webkitfullscreenchange", onFullscreen);
+    };
   }, [revealHud, running]);
 
   useEffect(() => () => window.clearTimeout(hideTimer.current), []);
@@ -204,7 +234,6 @@ export default function App() {
 
       {running && (
         <div
-          ref={stageRef}
           className={hudOpen ? "stage hud-open" : "stage"}
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
@@ -233,20 +262,11 @@ export default function App() {
             <button type="button" onClick={() => step(1)}>
               Next
             </button>
-            <button
-              type="button"
-              onClick={() => {
-                const node = stageRef.current;
-                if (!node) return;
-                if (document.fullscreenElement) {
-                  document.exitFullscreen().catch(() => {});
-                } else {
-                  node.requestFullscreen().catch(() => {});
-                }
-              }}
-            >
-              Full screen
-            </button>
+            {canFullscreen && (
+              <button type="button" onClick={() => (fullscreen ? exitFs() : requestFs())}>
+                {fullscreen ? "Exit full screen" : "Full screen"}
+              </button>
+            )}
             <button type="button" onClick={stop}>
               Stop
             </button>
