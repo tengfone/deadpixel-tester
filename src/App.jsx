@@ -208,6 +208,9 @@ export default function App() {
           className={hudOpen ? "stage hud-open" : "stage"}
           onPointerDown={onPointerDown}
           onPointerUp={onPointerUp}
+          onPointerCancel={() => {
+            touchStart.current = null;
+          }}
           onPointerMove={revealHud}
         >
           <Plate pattern={pattern} />

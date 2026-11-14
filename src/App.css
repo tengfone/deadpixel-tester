@@ -134,6 +134,7 @@
   z-index: 2;
   cursor: none;
   background: #000;
+  touch-action: none;
 }
 
 .stage.hud-open {
