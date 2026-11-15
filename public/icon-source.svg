@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <!-- Source for every app icon in public/. One frame of film on photographic
+       paper, with one grease-pencil red stuck pixel. Drawn on a 16-unit grid so
+       the 16 and 32 px favicons land on whole pixels. -->
+  <rect width="16" height="16" fill="#f5f5f3"/>
+  <rect y="2" width="16" height="12" fill="#111111"/>
+  <g fill="#f5f5f3">
+    <rect x="1" y="3" width="2" height="1"/>
+    <rect x="4" y="3" width="2" height="1"/>
+    <rect x="7" y="3" width="2" height="1"/>
+    <rect x="10" y="3" width="2" height="1"/>
+    <rect x="13" y="3" width="2" height="1"/>
+    <rect x="1" y="12" width="2" height="1"/>
+    <rect x="4" y="12" width="2" height="1"/>
+    <rect x="7" y="12" width="2" height="1"/>
+    <rect x="10" y="12" width="2" height="1"/>
+    <rect x="13" y="12" width="2" height="1"/>
+  </g>
+  <rect x="2" y="5" width="12" height="6" fill="#ffffff"/>
+  <rect x="10" y="7" width="2" height="2" fill="#e0401c"/>
+</svg>

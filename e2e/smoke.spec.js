@@ -11,13 +11,12 @@ test.beforeEach(async ({ page }) => {
       list.push(message.text());
     }
   });
-  // Fonts come from Google; keep the smoke test offline and deterministic.
-  await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) => route.abort());
   await page.goto("/");
 });
 
 test.afterEach(async ({ page }) => {
-  const list = (errors.get(page) ?? []).filter((text) => !/fonts\.|ERR_FAILED/.test(text));
+  // Fonts are self-hosted, so a missing font file counts as an error too.
+  const list = errors.get(page) ?? [];
   expect(list).toEqual([]);
 });
 
@@ -26,7 +25,7 @@ const plateName = (page) => page.locator(".chip strong");
 async function start(page) {
   await page.getByRole("button", { name: "Start test" }).click();
   await expect(page.locator(".stage")).toBeVisible();
-  await expect(plateName(page)).toHaveText("01 Black");
+  await expect(plateName(page)).toHaveText("1 Black");
 }
 
 async function goToPlate(page, name) {
@@ -87,7 +86,7 @@ test("flashing plate can be skipped from the dock", async ({ page }) => {
   await start(page);
   await goToPlate(page, "Stuck pixel");
   await page.getByRole("button", { name: "Skip flashing" }).click();
-  await expect(plateName(page)).toHaveText("06 Horizontal ramp");
+  await expect(plateName(page)).toHaveText("6 Horizontal ramp");
   await expect(page.locator(".dock .count")).toHaveText("6 / 10");
 });
 
@@ -97,16 +96,16 @@ test.describe("desktop", () => {
   test("keyboard and mouse drive the plates", async ({ page }) => {
     await start(page);
     await page.keyboard.press("ArrowRight");
-    await expect(plateName(page)).toHaveText("02 White");
+    await expect(plateName(page)).toHaveText("2 White");
     await page.keyboard.press("ArrowLeft");
     await page.keyboard.press("ArrowLeft");
     await expect(plateName(page)).toHaveText("11 Grid on white");
 
     await page.mouse.click(640, 360);
-    await expect(plateName(page)).toHaveText("01 Black");
+    await expect(plateName(page)).toHaveText("1 Black");
     await page.mouse.click(640, 360, { button: "right" });
     await page.mouse.click(640, 360, { button: "middle" });
-    await expect(plateName(page)).toHaveText("01 Black");
+    await expect(plateName(page)).toHaveText("1 Black");
 
     // Hidden dock ignores a tiny bump but returns on a real move.
     await page.waitForTimeout(3300);
@@ -115,7 +114,7 @@ test.describe("desktop", () => {
     await expect(page.locator(".stage")).not.toHaveClass(/hud-open/);
     await page.mouse.move(700, 400);
     await expect(page.locator(".stage")).toHaveClass(/hud-open/);
-    await expect(page.locator(".chip span")).toBeVisible();
+    await expect(page.locator(".chip-hint")).toBeVisible();
 
     for (let i = 0; i < 2 && (await page.locator(".stage").count()); i += 1) {
       await page.keyboard.press("Escape");
@@ -142,17 +141,17 @@ test.describe("touch", () => {
     await start(page);
     const { width, height } = page.viewportSize();
     await page.touchscreen.tap(width / 2, height / 2);
-    await expect(plateName(page)).toHaveText("02 White");
+    await expect(plateName(page)).toHaveText("2 White");
     await swipe(page, 300, 100);
-    await expect(plateName(page)).toHaveText("03 Red");
+    await expect(plateName(page)).toHaveText("3 Red");
     await swipe(page, 100, 300);
-    await expect(plateName(page)).toHaveText("02 White");
+    await expect(plateName(page)).toHaveText("2 White");
 
     await page.waitForTimeout(3300);
     await expect(page.locator(".stage")).not.toHaveClass(/hud-open/);
     await page.touchscreen.tap(width / 2, 10);
     await expect(page.locator(".stage")).toHaveClass(/hud-open/);
-    await expect(plateName(page)).toHaveText("02 White");
+    await expect(plateName(page)).toHaveText("2 White");
 
     const dock = await page.locator(".dock").boundingBox();
     expect(dock.x).toBeGreaterThanOrEqual(0);

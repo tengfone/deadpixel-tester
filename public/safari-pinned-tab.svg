@@ -1,31 +1,5 @@
-<?xml version="1.0" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
- "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="700.000000pt" height="700.000000pt" viewBox="0 0 700.000000 700.000000"
- preserveAspectRatio="xMidYMid meet">
-<metadata>
-Created by potrace 1.14, written by Peter Selinger 2001-2017
-</metadata>
-<g transform="translate(0.000000,700.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
-<path d="M0 5970 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-<path d="M2470 5970 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-<path d="M4940 5970 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-<path d="M0 3500 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-<path d="M2470 3500 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-<path d="M4940 3500 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-<path d="M0 1030 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-<path d="M2470 1030 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-<path d="M4940 1030 l0 -1030 1030 0 1030 0 0 1030 0 1030 -1030 0 -1030 0 0
--1030z"/>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <!-- Single-colour silhouette of public/icon-source.svg: the film frame with its
+       sprocket holes and window cut out, and the stuck pixel left solid. -->
+  <path fill="#000000" fill-rule="evenodd" d="M0 2h16v12H0z M1 3h2v1H1z M4 3h2v1H4z M7 3h2v1H7z M10 3h2v1h-2z M13 3h2v1h-2z M1 12h2v1H1z M4 12h2v1H4z M7 12h2v1H7z M10 12h2v1h-2z M13 12h2v1h-2z M2 5h12v6H2z M10 7h2v2h-2z"/>
 </svg>

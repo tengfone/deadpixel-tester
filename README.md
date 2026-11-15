@@ -4,6 +4,8 @@ A full-screen monitor check for dead, stuck, and uneven pixels. The page fills t
 
 Live demo: [deadpixel-tester.vercel.app](https://deadpixel-tester.vercel.app/)
 
+![Dead pixel tester: the contact-sheet intro, then the test plates in full screen](assets/demo.gif)
+
 ## What it shows
 
 1. Solid plates: black, white, red, green, blue

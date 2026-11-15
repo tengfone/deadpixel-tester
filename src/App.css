@@ -1,108 +1,89 @@
+/* ---------- Intro: the contact sheet ---------- */
+
 .intro {
+  --gutter: 24px;
+  --sprockets: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='7'%3E%3Crect x='5' width='10' height='7' rx='1.5' fill='%23f5f5f3'/%3E%3C/svg%3E");
+  width: min(1080px, 100% - 2 * var(--gutter));
   min-height: 100dvh;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  padding: max(28px, env(safe-area-inset-top)) max(22px, env(safe-area-inset-right))
-    max(22px, env(safe-area-inset-bottom)) max(22px, env(safe-area-inset-left));
-  background:
-    radial-gradient(1200px 500px at 50% -10%, rgba(228, 163, 34, 0.16), transparent 55%),
-    #171910;
-}
-
-.mast {
+  margin: 0 auto;
+  padding: max(28px, env(safe-area-inset-top)) 0 max(20px, env(safe-area-inset-bottom));
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  max-width: 880px;
-  width: 100%;
-  margin: 0 auto;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #a39e8c;
+  flex-direction: column;
 }
 
-.mast a {
-  color: #e4a322;
-  text-decoration: none;
-}
-
-.mast a:hover {
-  text-decoration: underline;
-}
-
-.intro-main {
-  max-width: 880px;
-  width: 100%;
-  margin: 0 auto;
+.head {
   display: grid;
-  align-content: center;
-  gap: 28px;
-  padding: 32px 0 48px;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 56px;
+  align-items: start;
 }
 
 .intro h1 {
-  margin: 10px 0 0;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-weight: 500;
-  font-size: clamp(40px, 7vw, 72px);
-  letter-spacing: -0.04em;
-  line-height: 0.95;
+  margin: 0;
+  font-family: var(--font-copy);
+  font-weight: 700;
+  font-size: 46px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 .lede {
-  max-width: 38rem;
-  margin: 16px 0 0;
-  font-size: 18px;
+  max-width: 31em;
+  margin: 14px 0 0;
+  font-size: 17px;
   line-height: 1.45;
-  color: #d7d2c4;
+  text-wrap: pretty;
 }
 
 .actions {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
   align-items: center;
-  margin-top: 22px;
+  gap: 16px;
 }
 
 .start {
   appearance: none;
   border: 0;
-  background: #e4a322;
-  color: #171910;
-  padding: 14px 22px;
+  border-radius: 4px;
+  padding: 14px 26px;
+  background: var(--film);
+  color: var(--paper);
   font-weight: 600;
-  letter-spacing: 0.01em;
+  font-size: 16px;
+  line-height: 1;
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(17, 17, 17, 0.18), 0 4px 10px -4px rgba(17, 17, 17, 0.3);
+  transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .start:hover {
-  background: #f0b63a;
+  background: #000;
+  box-shadow: 0 1px 2px rgba(17, 17, 17, 0.2), 0 8px 18px -6px rgba(17, 17, 17, 0.38);
+}
+
+.start:active {
+  box-shadow: 0 1px 1px rgba(17, 17, 17, 0.2);
 }
 
 .plate-count {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #a39e8c;
+  font-family: var(--font-edge);
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1;
+  color: var(--mute);
+  font-variant-numeric: tabular-nums;
 }
 
 .flash-setting {
-  display: grid;
-  gap: 6px;
   margin-top: 18px;
-  max-width: 38rem;
 }
 
 .flash-setting label {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  width: fit-content;
+  font-weight: 600;
   font-size: 15px;
   cursor: pointer;
 }
@@ -111,62 +92,291 @@
   width: 18px;
   height: 18px;
   margin: 0;
-  accent-color: #e4a322;
-}
-
-.flash-setting input:focus-visible {
-  outline: 2px solid #e4a322;
-  outline-offset: 3px;
+  accent-color: var(--film);
+  cursor: pointer;
 }
 
 .flash-setting p {
-  margin: 0;
-  font-size: 14px;
+  margin: 7px 0 0;
+  font-size: 13.5px;
   line-height: 1.45;
-  color: #a39e8c;
+  color: var(--mute);
+  text-wrap: pretty;
 }
 
 .flash-setting p.warning {
-  color: #f0b63a;
+  color: var(--ink);
+}
+
+.warning-lead {
+  font-weight: 700;
+}
+
+.tag {
+  display: inline-block;
+  padding: 1px 6px 2px;
+  border-radius: 2px;
+  background: var(--amber);
+  color: var(--film);
+  font-family: var(--font-copy);
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.tag-quiet {
+  padding: 0 5px 1px;
+  border: 1px solid var(--key-line);
+  background: transparent;
+  color: var(--mute);
+}
+
+/* Film strips. Each frame carries its own piece of film, so the strip on a
+   desk and the frame grid on a phone are the same markup. */
+
+.sheet-strips {
+  margin-top: 16px;
 }
 
 .strip {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  height: 18px;
-  width: min(100%, 420px);
-  border: 1px solid #3a4030;
-}
-
-.controls {
-  display: grid;
-  gap: 8px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   margin: 0;
   padding: 0;
   list-style: none;
-  color: #a39e8c;
-  font-size: 14px;
+}
+
+.strip + .strip {
+  margin-top: 12px;
+}
+
+.cell {
+  position: relative;
+  min-width: 0;
+}
+
+.film {
+  position: relative;
+  padding: 24px 10px 38px;
+  background: var(--film);
+}
+
+.film::before,
+.film::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 7px;
+  background-image: var(--sprockets);
+  background-size: 20px 7px;
+  background-repeat: space no-repeat;
+}
+
+.film::before {
+  top: 8px;
+}
+
+.film::after {
+  bottom: 8px;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #000;
+}
+
+.thumb-split {
+  display: flex;
+}
+
+.thumb-split span {
+  flex: 1 1 0;
+  background: #000;
+}
+
+.thumb-split span + span {
+  background: #fff;
+}
+
+.edge {
+  position: absolute;
+  left: 10px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-edge);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--edge-print);
+  font-variant-numeric: tabular-nums;
+}
+
+.edge-mark {
+  width: 5px;
+  height: 7px;
+  flex: none;
+}
+
+.hint {
+  margin: 0;
+  padding: 9px 10px 0;
+  font-size: 12.5px;
+  line-height: 1.38;
+  color: var(--mute);
+  text-wrap: pretty;
+}
+
+.hint strong {
+  display: block;
+  margin-bottom: 2px;
+  font-family: var(--font-edge);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.hint-text {
+  display: block;
+}
+
+.hint .tag {
+  margin-top: 6px;
+}
+
+.is-out .frame {
+  opacity: 0.3;
+}
+
+.is-out .hint-text {
+  color: var(--mute);
+}
+
+/* Grease pencil */
+
+.grease {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+  stroke: var(--grease);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.grease-box {
+  top: 16px;
+  left: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 46px);
+  transform: rotate(-1.2deg);
+}
+
+.grease-strike {
+  top: 22px;
+  left: 8px;
+  width: calc(100% - 16px);
+  height: calc(100% - 58px);
+}
+
+.grease-ring {
+  top: 4px;
+  left: -9px;
+  width: calc(100% + 17px);
+  height: calc(100% + 16px);
+  transform: rotate(-1.5deg);
+}
+
+.start-note {
+  position: absolute;
+  top: 58px;
+  right: calc(100% + 10px);
+  display: none;
+  align-items: center;
+  gap: 4px;
+  color: var(--grease);
+  transform: rotate(-6deg);
+}
+
+.start-word {
+  font-family: var(--font-hand);
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.start-note svg {
+  width: 48px;
+  height: 18px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (min-width: 1300px) {
+  .start-note {
+    display: inline-flex;
+  }
+}
+
+/* Controls summary and footer */
+
+.controls {
+  display: grid;
+  grid-template-columns: 1.25fr 1.1fr 0.8fr;
+  gap: 32px;
+  margin: 14px 0 0;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--rule);
+  list-style: none;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--mute);
 }
 
 .controls kbd {
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 1px 5px;
+  border: 1px solid var(--key-line);
+  border-bottom-width: 2px;
+  border-radius: 3px;
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-family: var(--font-copy);
+  font-weight: 600;
   font-size: 12px;
-  color: #f4f0e4;
-  border: 1px solid #3a4030;
-  padding: 1px 6px;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .foot {
-  max-width: 880px;
-  width: 100%;
-  margin: 0 auto;
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  color: #8a8678;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  font-family: var(--font-edge);
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 1.2;
+  color: var(--mute);
 }
+
+.foot a {
+  color: var(--ink);
+}
+
+/* ---------- Test stage ---------- */
 
 .stage {
   position: fixed;
@@ -214,26 +424,28 @@
   image-rendering: pixelated;
 }
 
+/* In-test chrome: a strip of film with edge print. */
+
 .chip,
 .dock {
   position: absolute;
   z-index: 3;
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  color: #f4f0e4;
+  color: var(--paper);
+  background: var(--film);
 }
 
 .chip {
   top: max(18px, env(safe-area-inset-top));
   left: max(18px, env(safe-area-inset-left));
   display: grid;
-  gap: 4px;
-  max-width: min(420px, calc(100vw - 36px));
-  padding: 10px 12px;
-  background: rgba(23, 25, 16, 0.78);
-  border: 1px solid rgba(228, 163, 34, 0.75);
+  gap: 5px;
+  max-width: min(440px, calc(100vw - 36px));
+  padding: 11px 14px 12px;
+  border-radius: 3px;
+  box-shadow: 0 2px 10px -2px rgba(0, 0, 0, 0.45);
   pointer-events: none;
   opacity: 0;
-  transition: opacity 180ms linear;
+  transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hud-open .chip {
@@ -241,16 +453,28 @@
 }
 
 .chip strong {
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-edge);
+  font-weight: 600;
+  font-size: 19px;
+  line-height: 1.1;
 }
 
-.chip span {
-  font-family: "IBM Plex Sans", sans-serif;
+.chip-no {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 15px;
+  color: var(--edge-print);
+  font-variant-numeric: tabular-nums;
+}
+
+.chip-hint {
   font-size: 14px;
-  color: #d7d2c4;
+  line-height: 1.4;
+  color: #d4d4cf;
 }
 
 .dock {
@@ -260,13 +484,35 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  padding: 8px;
-  background: rgba(23, 25, 16, 0.9);
-  border: 1px solid #3a4030;
+  padding: 18px 10px;
+  border-radius: 3px;
+  box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.5);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 180ms linear, transform 180ms linear;
+  transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1), transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
   max-width: calc(100vw - 24px);
+}
+
+/* Sprocket rows along the bar, dark so they never read as lit pixels. */
+.dock::before,
+.dock::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  height: 5px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='5'%3E%3Crect x='3' width='8' height='5' rx='1' fill='%23333331'/%3E%3C/svg%3E");
+  background-size: 14px 5px;
+  background-repeat: space no-repeat;
+  pointer-events: none;
+}
+
+.dock::before {
+  top: 6px;
+}
+
+.dock::after {
+  bottom: 6px;
 }
 
 .hud-open .dock,
@@ -278,15 +524,50 @@
 
 .dock button {
   appearance: none;
-  border: 1px solid #3a4030;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 13px;
+  border: 1px solid var(--film-line);
+  border-radius: 3px;
   background: transparent;
-  padding: 8px 12px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
   cursor: pointer;
-  font-size: 13px;
+  transition: background-color 140ms cubic-bezier(0.16, 1, 0.3, 1), border-color 140ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dock button:hover {
-  border-color: #e4a322;
+  border-color: #8a8a85;
+  background: var(--film-raised);
+}
+
+.dock button:focus-visible {
+  outline-offset: 2px;
+}
+
+/* The flashing plate's own control carries a small amber dot, the same
+   amber as the flashing-plate tag on the contact sheet. */
+.dock .dock-skip::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+}
+
+.chevron {
+  width: 9px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .dock-short {
@@ -294,11 +575,13 @@
 }
 
 .dock .count {
-  min-width: 9ch;
+  min-width: 7ch;
   text-align: center;
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: #e4a322;
+  font-family: var(--font-edge);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--edge-print);
+  font-variant-numeric: tabular-nums;
 }
 
 .sr-only {
@@ -331,19 +614,119 @@
   }
 
   .chip,
-  .dock {
+  .dock,
+  .dock button,
+  .start {
     transition: none;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 980px) {
+  .head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 18px;
+  }
+
+  .controls {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+}
+
+/* Below the desk layout the hint columns are narrower than the ring's curve,
+   so the ringed frame's hint and tag sit further inside it. */
+@media (max-width: 980px) {
+  .is-flash .hint {
+    padding: 9px 14px 10px;
+  }
+
+  .grease-ring {
+    top: 2px;
+    left: -8px;
+    width: calc(100% + 16px);
+    height: calc(100% + 12px);
+    transform: rotate(-1deg);
   }
 }
 
 @media (max-width: 640px) {
   .intro {
-    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
-      max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    --gutter: 16px;
+    padding-top: max(22px, env(safe-area-inset-top));
+  }
+
+  .intro h1 {
+    font-size: 36px;
+  }
+
+  .lede {
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  .head {
+    gap: 20px;
+  }
+
+  .start {
+    padding: 15px 28px;
+  }
+
+  .flash-setting {
+    margin-top: 16px;
+  }
+
+  .sheet-strips {
+    margin-top: 26px;
+  }
+
+  .strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 12px;
+    row-gap: 16px;
+  }
+
+  .strip + .strip {
+    margin-top: 16px;
+  }
+
+  .film {
+    padding: 20px 8px 32px;
+  }
+
+  .film::before {
+    top: 6px;
+  }
+
+  .film::after {
+    bottom: 6px;
+  }
+
+  .edge {
+    left: 8px;
+    bottom: 14px;
+  }
+
+  .hint {
+    padding: 8px 2px 0;
+    font-size: 13px;
+  }
+
+  .grease-box {
+    top: 12px;
+    height: calc(100% - 36px);
   }
 
   .foot {
     flex-direction: column;
+    gap: 6px;
   }
 
   .dock {
@@ -352,7 +735,7 @@
   }
 
   .dock button {
-    padding: 10px 10px;
+    padding: 9px 10px;
   }
 }
 
@@ -361,12 +744,12 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 6px;
-    padding: 6px;
+    padding: 16px 6px;
   }
 
   .dock button {
     flex: 1 1 auto;
-    padding: 10px 8px;
+    padding: 9px 8px;
   }
 
   .dock .count {
@@ -378,7 +761,7 @@
   }
 
   .dock-short {
-    display: inline;
+    display: inline-flex;
   }
 }
 

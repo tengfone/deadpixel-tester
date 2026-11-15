@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
+import ContactSheet, { EdgeMark } from "./ContactSheet.jsx";
 import Plate from "./Plate.jsx";
-import { BAR_COLOURS, FLASH_PLATE, PATTERNS } from "./patterns.js";
+import { FLASH_PLATE, FLASH_SECONDS, PATTERNS } from "./patterns.js";
 
 const HUD_MS = 3000;
 const EDGE_ZONE = 0.15;
@@ -85,14 +86,30 @@ function DockButton({ onClick, ...props }) {
   );
 }
 
+// Returns the warning as a bold lead word (only when the plate will really
+// flash) and the sentence after it.
 function flashWarning(included, reducedMotion) {
   if (!included) {
-    return "The black and white blink is left out of the test.";
+    return { lead: null, text: "The black and white blink is left out of the test." };
   }
   if (reducedMotion) {
-    return `Plate ${FLASH_PLATE} is shown as a still black and white split because reduced motion is on.`;
+    return {
+      lead: null,
+      text: `Plate ${FLASH_PLATE} is shown as a still black and white split because reduced motion is on.`,
+    };
   }
-  return `Warning: plate ${FLASH_PLATE} flips between black and white every 0.7 seconds. Untick this if flashing light affects you. You can also skip it during the test.`;
+  return {
+    lead: "Warning:",
+    text: `plate ${FLASH_PLATE} flips between black and white every ${FLASH_SECONDS} seconds. Untick this if flashing light affects you. You can also skip it during the test.`,
+  };
+}
+
+function Chevron({ direction }) {
+  return (
+    <svg className="chevron" viewBox="0 0 10 16" aria-hidden="true" focusable="false">
+      <path d={direction === "left" ? "M8 2 L2 8 L8 14" : "M2 2 L8 8 L2 14"} />
+    </svg>
+  );
 }
 
 export default function App() {
@@ -120,6 +137,7 @@ export default function App() {
   );
   const pattern = plates[index] ?? plates[0];
   const hint = reducedMotion && pattern.stillHint ? pattern.stillHint : pattern.hint;
+  const warning = flashWarning(includeFlash, reducedMotion);
 
   const armHide = useCallback(() => {
     window.clearTimeout(hideTimer.current);
@@ -308,45 +326,48 @@ export default function App() {
 
   return (
     <>
-      {!running && <main className="intro">
-        <header className="mast">
-          <span>Screen check</span>
-          <a href="https://github.com/tengfone/deadpixel-tester">Source</a>
-        </header>
-        <div className="intro-main">
-          <div className="strip" aria-hidden="true">
-            {BAR_COLOURS.map((color) => (
-              <span key={color} style={{ background: color }} />
-            ))}
-          </div>
-          <div>
-            <h1>Dead pixel tester</h1>
-            <p className="lede">
-              Fill this screen with a colour you can trust. A pixel that stays dark on white,
-              or bright on black, is dead or stuck.
-            </p>
-            <div className="actions">
-              <button ref={startButton} className="start" type="button" onClick={start}>
-                Start test
-              </button>
-              <span className="plate-count">{plates.length} plates</span>
-            </div>
-            <div className="flash-setting">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={includeFlash}
-                  onChange={(event) => setFlashChoice(event.target.checked)}
-                  aria-describedby="flash-warning"
-                />
-                Include flashing plate
-              </label>
-              <p id="flash-warning" className={includeFlash && !reducedMotion ? "warning" : undefined}>
-                {flashWarning(includeFlash, reducedMotion)}
+      {!running && (
+        <main className="intro">
+          <header className="head">
+            <div className="head-copy">
+              <h1>Dead pixel tester</h1>
+              <p className="lede">
+                Fill this screen with a colour you can trust. A pixel that stays dark on white is
+                dead; one that stays bright or coloured on black is stuck.
               </p>
             </div>
-          </div>
-          <ul className="controls">
+            <div className="head-side">
+              <div className="actions">
+                <button ref={startButton} className="start" type="button" onClick={start}>
+                  Start test
+                </button>
+                <span className="plate-count">{plates.length} plates</span>
+              </div>
+              <div className="flash-setting">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={includeFlash}
+                    onChange={(event) => setFlashChoice(event.target.checked)}
+                    aria-describedby="flash-warning"
+                  />
+                  Include flashing plate
+                </label>
+                <p id="flash-warning" className={warning.lead ? "warning" : undefined}>
+                  {warning.lead && (
+                    <>
+                      <strong className="warning-lead">{warning.lead}</strong>{" "}
+                    </>
+                  )}
+                  {warning.text}
+                </p>
+              </div>
+            </div>
+          </header>
+
+          <ContactSheet includeFlash={includeFlash} reducedMotion={reducedMotion} />
+
+          <ul className="controls" aria-label="Controls">
             <li>
               Click or tap the screen for the next plate. Swipe left for the next plate, right
               for the previous one. On a touch screen, tap near the top or bottom edge to show
@@ -359,12 +380,12 @@ export default function App() {
             </li>
             <li>The controls hide so they do not cover the pixels you are checking.</li>
           </ul>
-        </div>
-        <footer className="foot">
-          <span>Black, white, primaries, flash, ramps, bars, grid</span>
-          <span>Teng Fone</span>
-        </footer>
-      </main>}
+          <footer className="foot">
+            <span>Teng Fone</span>
+            <a href="https://github.com/tengfone/deadpixel-tester">Source on GitHub</a>
+          </footer>
+        </main>
+      )}
 
       {running && (
         <div
@@ -385,24 +406,33 @@ export default function App() {
           </p>
           <div className="chip" aria-hidden="true">
             <strong>
-              {String(index + 1).padStart(2, "0")} {pattern.name}
+              <span className="chip-no">
+                <EdgeMark />
+                {index + 1}
+              </span>{" "}
+              {pattern.name}
             </strong>
-            {labelOn && <span>{hint}</span>}
+            {labelOn && <span className="chip-hint">{hint}</span>}
           </div>
           <div className="dock" onFocus={revealHud}>
             <DockButton aria-label="Previous" onClick={() => step(-1)}>
               <span className="dock-long">Previous</span>
-              <span className="dock-short" aria-hidden="true">←</span>
+              <span className="dock-short" aria-hidden="true">
+                <Chevron direction="left" />
+              </span>
             </DockButton>
             <div className="count">
               {index + 1} / {plates.length}
             </div>
             <DockButton ref={nextButton} aria-label="Next" onClick={() => step(1)}>
               <span className="dock-long">Next</span>
-              <span className="dock-short" aria-hidden="true">→</span>
+              <span className="dock-short" aria-hidden="true">
+                <Chevron direction="right" />
+              </span>
             </DockButton>
             {pattern.kind === "flash" && !reducedMotion && (
               <DockButton
+                className="dock-skip"
                 onClick={(event) => {
                   skipFlash();
                   // The button disappears with the plate; keep keyboard focus in the dock.

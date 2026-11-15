@@ -15,6 +15,10 @@ export const PATTERNS = [
 // Grid pitch in CSS pixels. The canvas converts it to whole device pixels.
 export const GRID_PITCH = 8;
 
+// Seconds between black/white flips on the flashing plate. The CSS animation
+// in App.css runs one full black-white cycle in twice this.
+export const FLASH_SECONDS = 0.7;
+
 // 1-based position of the flashing plate, so copy never hardcodes it.
 export const FLASH_PLATE = PATTERNS.findIndex((pattern) => pattern.kind === "flash") + 1;
 

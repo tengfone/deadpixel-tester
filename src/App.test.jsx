@@ -16,7 +16,7 @@ function plateName() {
 }
 
 function plateHint() {
-  return document.querySelector(".chip span")?.textContent ?? null;
+  return document.querySelector(".chip-hint")?.textContent ?? null;
 }
 
 function counter() {
@@ -397,8 +397,38 @@ describe("reduced motion", () => {
 describe("intro copy", () => {
   it("describes the real swipe directions and full-screen key", () => {
     render(<App />);
-    const list = screen.getByRole("list");
+    const list = screen.getByRole("list", { name: "Controls" });
     expect(within(list).getByText(/Swipe left for the next plate, right\s+for the previous one/)).toBeInTheDocument();
     expect(within(list).getByText(/toggles full\s+screen/)).toBeInTheDocument();
+  });
+});
+
+describe("contact sheet", () => {
+  it("shows every plate in order with its name and hint", () => {
+    render(<App />);
+    const frames = screen
+      .getAllByRole("list", { name: /^Plates \d+ to \d+$/ })
+      .flatMap((list) => within(list).getAllByRole("listitem"));
+    expect(frames).toHaveLength(TOTAL);
+    frames.forEach((frame, i) => {
+      expect(frame).toHaveTextContent(PATTERNS[i].name);
+      expect(frame).toHaveTextContent(PATTERNS[i].hint);
+    });
+    expect(frames[FLASH_PLATE - 1]).toHaveTextContent("Flashes every 0.7 s");
+  });
+
+  it("marks the flashing frame as left out when it is unticked", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("checkbox", { name: "Include flashing plate" }));
+    const flash = document.querySelectorAll(".cell")[FLASH_PLATE - 1];
+    expect(flash).toHaveClass("is-out");
+    expect(flash).toHaveTextContent("Left out");
+  });
+
+  it("shows the still hint under the flashing frame with reduced motion", () => {
+    media.reduced = true;
+    render(<App />);
+    const flash = document.querySelectorAll(".cell")[FLASH_PLATE - 1];
+    expect(flash).toHaveTextContent(PATTERNS[FLASH_PLATE - 1].stillHint);
   });
 });
