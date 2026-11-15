@@ -1,53 +1,312 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-15T00:00:00Z",
+  "generatedAt": "2026-11-15T12:00:00Z",
   "title": "Design System: Dead pixel tester",
   "extensions": {
     "colorMeta": {
-      "film":         { "role": "primary",   "displayName": "Film Black",          "canonical": "#111111", "tonalRamp": ["#111111", "#1c1c1b", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3"] },
-      "grease":       { "role": "secondary", "displayName": "Grease-Pencil Red",   "canonical": "#e0401c", "tonalRamp": ["#3a1006", "#5e1a0b", "#8a2510", "#b53217", "#e0401c", "#ea6a4c", "#f29c86", "#f9d2c8"] },
-      "amber":        { "role": "tertiary",  "displayName": "Flashing Amber",      "canonical": "#d9a441", "tonalRamp": ["#3b2a0c", "#5f4415", "#87611e", "#b0802e", "#d9a441", "#e3bb6c", "#edd29c", "#f7ead0"] },
-      "paper":        { "role": "neutral",   "displayName": "Photographic Paper",  "canonical": "#f5f5f3", "tonalRamp": ["#1a1a19", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3", "#fbfbfa"] },
-      "paper-raised": { "role": "neutral",   "displayName": "Raised Paper",        "canonical": "#fbfbfa", "tonalRamp": ["#1a1a19", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3", "#fbfbfa"] },
-      "film-raised":  { "role": "neutral",   "displayName": "Raised Film",         "canonical": "#1c1c1b", "tonalRamp": ["#111111", "#1c1c1b", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3"] },
-      "film-line":    { "role": "neutral",   "displayName": "Film Line",           "canonical": "#3a3a38", "tonalRamp": ["#111111", "#1c1c1b", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3"] },
-      "ink":          { "role": "neutral",   "displayName": "Ink",                 "canonical": "#1a1a19", "tonalRamp": ["#111111", "#1a1a19", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3"] },
-      "mute":         { "role": "neutral",   "displayName": "Mute",                "canonical": "#5b5b57", "tonalRamp": ["#111111", "#1a1a19", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3"] },
-      "rule":         { "role": "neutral",   "displayName": "Rule",                "canonical": "#d8d8d4", "tonalRamp": ["#111111", "#1a1a19", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3"] },
-      "key-line":     { "role": "neutral",   "displayName": "Key Line",            "canonical": "#b9b9b4", "tonalRamp": ["#111111", "#1a1a19", "#3a3a38", "#5b5b57", "#8a8a85", "#b9b9b4", "#d8d8d4", "#f5f5f3"] },
-      "edge-print":   { "role": "neutral",   "displayName": "Edge Print",          "canonical": "#bcbcb7", "tonalRamp": ["#111111", "#1a1a19", "#3a3a38", "#5b5b57", "#8a8a85", "#bcbcb7", "#d8d8d4", "#f5f5f3"] }
+      "film": {
+        "role": "primary",
+        "displayName": "Film Black",
+        "canonical": "#111111",
+        "tonalRamp": [
+          "#111111",
+          "#1c1c1b",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3"
+        ]
+      },
+      "grease": {
+        "role": "secondary",
+        "displayName": "Grease-Pencil Red",
+        "canonical": "#e0401c",
+        "tonalRamp": [
+          "#3a1006",
+          "#5e1a0b",
+          "#8a2510",
+          "#b53217",
+          "#e0401c",
+          "#ea6a4c",
+          "#f29c86",
+          "#f9d2c8"
+        ]
+      },
+      "amber": {
+        "role": "tertiary",
+        "displayName": "Flashing Amber",
+        "canonical": "#d9a441",
+        "tonalRamp": [
+          "#3b2a0c",
+          "#5f4415",
+          "#87611e",
+          "#b0802e",
+          "#d9a441",
+          "#e3bb6c",
+          "#edd29c",
+          "#f7ead0"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Photographic Paper",
+        "canonical": "#f5f5f3",
+        "tonalRamp": [
+          "#1a1a19",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3",
+          "#fbfbfa"
+        ]
+      },
+      "paper-raised": {
+        "role": "neutral",
+        "displayName": "Raised Paper",
+        "canonical": "#fbfbfa",
+        "tonalRamp": [
+          "#1a1a19",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3",
+          "#fbfbfa"
+        ]
+      },
+      "film-raised": {
+        "role": "neutral",
+        "displayName": "Raised Film",
+        "canonical": "#1c1c1b",
+        "tonalRamp": [
+          "#111111",
+          "#1c1c1b",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3"
+        ]
+      },
+      "film-line": {
+        "role": "neutral",
+        "displayName": "Film Line",
+        "canonical": "#3a3a38",
+        "tonalRamp": [
+          "#111111",
+          "#1c1c1b",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1a1a19",
+        "tonalRamp": [
+          "#111111",
+          "#1a1a19",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3"
+        ]
+      },
+      "mute": {
+        "role": "neutral",
+        "displayName": "Mute",
+        "canonical": "#5b5b57",
+        "tonalRamp": [
+          "#111111",
+          "#1a1a19",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#d8d8d4",
+        "tonalRamp": [
+          "#111111",
+          "#1a1a19",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3"
+        ]
+      },
+      "key-line": {
+        "role": "neutral",
+        "displayName": "Key Line",
+        "canonical": "#b9b9b4",
+        "tonalRamp": [
+          "#111111",
+          "#1a1a19",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#b9b9b4",
+          "#d8d8d4",
+          "#f5f5f3"
+        ]
+      },
+      "edge-print": {
+        "role": "neutral",
+        "displayName": "Edge Print",
+        "canonical": "#bcbcb7",
+        "tonalRamp": [
+          "#111111",
+          "#1a1a19",
+          "#3a3a38",
+          "#5b5b57",
+          "#8a8a85",
+          "#bcbcb7",
+          "#d8d8d4",
+          "#f5f5f3"
+        ]
+      }
     },
     "typographyMeta": {
-      "display":      { "displayName": "Display", "purpose": "The page title only; 36px on phones." },
-      "body-lede":    { "displayName": "Lede", "purpose": "The one-line explanation under the title; 16px on phones." },
-      "body":         { "displayName": "Body", "purpose": "Base copy and the flash setting label (at 600)." },
-      "body-small":   { "displayName": "Small", "purpose": "Frame hints, flash warning, controls summary." },
-      "label-button": { "displayName": "Button label", "purpose": "Start test." },
-      "edge-title":   { "displayName": "Edge title", "purpose": "Plate names under frames; 19px in the in-test chip." },
-      "edge-print":   { "displayName": "Edge print", "purpose": "Frame numbers on film, counters, plate count, footer." },
-      "hand":         { "displayName": "Hand", "purpose": "The single word 'start' beside frame 1, at 1300px and wider." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "The page title and the summary heading; 36px on phones."
+      },
+      "body-lede": {
+        "displayName": "Lede",
+        "purpose": "The one-line explanation under the title; 16px on phones."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Base copy and the flash setting label (at 600)."
+      },
+      "body-small": {
+        "displayName": "Small",
+        "purpose": "Frame hints, flash warning, controls summary."
+      },
+      "label-button": {
+        "displayName": "Button label",
+        "purpose": "Start test, Copy summary and the quiet buttons."
+      },
+      "edge-title": {
+        "displayName": "Edge title",
+        "purpose": "Plate names under frames; 19px in the in-test chip."
+      },
+      "edge-print": {
+        "displayName": "Edge print",
+        "purpose": "Frame numbers on film, counters, plate count, footer screen line, summary date and screen line."
+      },
+      "hand": {
+        "displayName": "Hand",
+        "purpose": "The single word 'start' beside frame 1, at 1300px and wider."
+      }
     },
     "shadows": [
-      { "name": "button-rest",  "value": "0 1px 2px rgba(17,17,17,0.18), 0 4px 10px -4px rgba(17,17,17,0.3)", "purpose": "Start test at rest." },
-      { "name": "button-hover", "value": "0 1px 2px rgba(17,17,17,0.2), 0 8px 18px -6px rgba(17,17,17,0.38)", "purpose": "Start test on hover." },
-      { "name": "button-press", "value": "0 1px 1px rgba(17,17,17,0.2)", "purpose": "Start test pressed." },
-      { "name": "chip",         "value": "0 2px 10px -2px rgba(0,0,0,0.45)", "purpose": "In-test plate label over the plate." },
-      { "name": "dock",         "value": "0 4px 18px -4px rgba(0,0,0,0.5)", "purpose": "In-test control bar over the plate." }
+      {
+        "name": "button-rest",
+        "value": "0 1px 2px rgba(17,17,17,0.18), 0 4px 10px -4px rgba(17,17,17,0.3)",
+        "purpose": "The primary button (Start test, Copy summary) at rest."
+      },
+      {
+        "name": "button-hover",
+        "value": "0 1px 2px rgba(17,17,17,0.2), 0 8px 18px -6px rgba(17,17,17,0.38)",
+        "purpose": "The primary button (Start test, Copy summary) on hover."
+      },
+      {
+        "name": "button-press",
+        "value": "0 1px 1px rgba(17,17,17,0.2)",
+        "purpose": "The primary button (Start test, Copy summary) pressed."
+      },
+      {
+        "name": "chip",
+        "value": "0 2px 10px -2px rgba(0,0,0,0.45)",
+        "purpose": "In-test plate label over the plate."
+      },
+      {
+        "name": "dock",
+        "value": "0 4px 18px -4px rgba(0,0,0,0.5)",
+        "purpose": "In-test control bar over the plate."
+      }
     ],
     "motion": [
-      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Every chrome transition." },
-      { "name": "button", "value": "160ms", "purpose": "Start test background and shadow." },
-      { "name": "dock-button", "value": "140ms", "purpose": "Dock button fill and outline." },
-      { "name": "hud-fade", "value": "180ms", "purpose": "Chip and dock opacity; the dock also rises 12px over 220ms." },
-      { "name": "hud-hide", "value": "3000ms", "purpose": "Delay before chip and dock hide during the test." },
-      { "name": "reduced-motion", "value": "none", "purpose": "All chrome transitions are removed under prefers-reduced-motion." }
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Every chrome transition."
+      },
+      {
+        "name": "button",
+        "value": "160ms",
+        "purpose": "Start test background and shadow."
+      },
+      {
+        "name": "dock-button",
+        "value": "140ms",
+        "purpose": "Dock button fill and outline."
+      },
+      {
+        "name": "grease-hover",
+        "value": "140ms",
+        "purpose": "The grease box fading in on a hovered or focused startable frame; quiet button outline and fill."
+      },
+      {
+        "name": "hud-fade",
+        "value": "180ms",
+        "purpose": "Chip and dock opacity; the dock also rises 12px over 220ms."
+      },
+      {
+        "name": "hud-hide",
+        "value": "3000ms",
+        "purpose": "Delay before chip and dock hide during the test."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "none",
+        "purpose": "All chrome transitions are removed under prefers-reduced-motion."
+      }
     ],
     "breakpoints": [
-      { "name": "hand-note", "value": "min-width: 1300px" },
-      { "name": "tablet", "value": "max-width: 980px" },
-      { "name": "phone", "value": "max-width: 640px" },
-      { "name": "narrow", "value": "max-width: 420px" },
-      { "name": "tiny", "value": "max-width: 359px" }
+      {
+        "name": "wide",
+        "value": "min-width: 1300px",
+        "note": "Sheet widens to 1160px; the handwritten start note appears."
+      },
+      {
+        "name": "tablet",
+        "value": "max-width: 980px",
+        "note": "Head and result stack; strips become four-column grids."
+      },
+      {
+        "name": "phone",
+        "value": "max-width: 640px",
+        "note": "Two-column frame grid, 16px gutter, 36px title."
+      },
+      {
+        "name": "narrow",
+        "value": "max-width: 420px"
+      },
+      {
+        "name": "tiny",
+        "value": "max-width: 359px"
+      }
     ]
   },
   "components": [
@@ -58,6 +317,14 @@
       "description": "The one primary action on the contact sheet.",
       "html": "<button class=\"ds-start\" type=\"button\">Start test</button>",
       "css": ".ds-start { appearance: none; border: 0; border-radius: 4px; padding: 14px 26px; background: #111111; color: #f5f5f3; font-family: Archivo, Arial, sans-serif; font-weight: 600; font-size: 16px; line-height: 1; cursor: pointer; box-shadow: 0 1px 2px rgba(17,17,17,0.18), 0 4px 10px -4px rgba(17,17,17,0.3); transition: background-color 160ms cubic-bezier(0.16,1,0.3,1), box-shadow 160ms cubic-bezier(0.16,1,0.3,1); } .ds-start:hover { background: #000; box-shadow: 0 1px 2px rgba(17,17,17,0.2), 0 8px 18px -6px rgba(17,17,17,0.38); } .ds-start:active { box-shadow: 0 1px 1px rgba(17,17,17,0.2); } .ds-start:focus-visible { outline: 2px solid #e0401c; outline-offset: 3px; }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Outlined secondary action beside the primary (Run again, Back to start).",
+      "html": "<button class=\"ds-quiet\" type=\"button\">Run again</button>",
+      "css": ".ds-quiet { appearance: none; padding: 13px 20px; border: 1px solid #b9b9b4; border-radius: 4px; background: transparent; color: #1a1a19; font-family: Archivo, Arial, sans-serif; font-weight: 600; font-size: 16px; line-height: 1; cursor: pointer; transition: border-color 140ms cubic-bezier(0.16,1,0.3,1), background-color 140ms cubic-bezier(0.16,1,0.3,1); } .ds-quiet:hover { border-color: #1a1a19; background: #fbfbfa; } .ds-quiet:focus-visible { outline: 2px solid #e0401c; outline-offset: 3px; }"
     },
     {
       "name": "Dock Button",
@@ -100,12 +367,20 @@
       "css": ".ds-flash { font-family: Archivo, Arial, sans-serif; color: #1a1a19; } .ds-flash label { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; cursor: pointer; } .ds-flash input { width: 18px; height: 18px; margin: 0; accent-color: #111111; } .ds-flash input:focus-visible { outline: 2px solid #e0401c; outline-offset: 3px; } .ds-flash p { margin: 7px 0 0; font-size: 13.5px; line-height: 1.45; color: #1a1a19; }"
     },
     {
+      "name": "Problem-type Select",
+      "kind": "input",
+      "refersTo": "problem-select",
+      "description": "Native select under a marked frame on the summary, with a drawn ink chevron.",
+      "html": "<select class=\"ds-select\"><option>Problem, type not set</option><option>Dead pixel</option><option>Stuck pixel</option><option>Banding or bleed</option><option>Other</option></select>",
+      "css": ".ds-select { display: block; width: 200px; padding: 5px 26px 6px 8px; border: 1px solid #b9b9b4; border-radius: 3px; background: #fbfbfa url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%231a1a19' stroke-width='1.5'/%3E%3C/svg%3E\") no-repeat right 9px center; color: #1a1a19; font: 500 13px/1.3 Archivo, Arial, sans-serif; appearance: none; cursor: pointer; } .ds-select:hover { border-color: #1a1a19; } .ds-select:focus-visible { outline: 2px solid #e0401c; outline-offset: 3px; }"
+    },
+    {
       "name": "Film Frame",
       "kind": "card",
       "refersTo": "film-frame",
-      "description": "Signature cell: film with sprockets, a 16:10 plate render, edge-printed number, hint beneath.",
-      "html": "<div class=\"ds-cell\"><div class=\"ds-film\"><div class=\"ds-frame\"></div><span class=\"ds-edge\"><svg width=\"5\" height=\"7\" viewBox=\"0 0 6 8\"><path d=\"M0 0 L6 4 L0 8 Z\" fill=\"currentColor\"/></svg>2</span></div><p class=\"ds-hint\"><strong>White</strong>Dark specks here are dead pixels.</p></div>",
-      "css": ".ds-cell { width: 180px; background: #f5f5f3; font-family: Archivo, Arial, sans-serif; } .ds-film { position: relative; padding: 24px 10px 38px; background: #111111; } .ds-film::before, .ds-film::after { content: \"\"; position: absolute; left: 4px; right: 4px; height: 7px; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='7'%3E%3Crect x='5' width='10' height='7' rx='1.5' fill='%23f5f5f3'/%3E%3C/svg%3E\"); background-size: 20px 7px; background-repeat: space no-repeat; } .ds-film::before { top: 8px; } .ds-film::after { bottom: 8px; } .ds-frame { aspect-ratio: 16 / 10; background: #ffffff; } .ds-edge { position: absolute; left: 10px; bottom: 16px; display: inline-flex; align-items: center; gap: 5px; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 13px; line-height: 1; color: #bcbcb7; font-variant-numeric: tabular-nums; } .ds-hint { margin: 0; padding: 9px 10px 0; font-size: 12.5px; line-height: 1.38; color: #5b5b57; } .ds-hint strong { display: block; margin-bottom: 2px; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 16px; line-height: 1.15; color: #1a1a19; }"
+      "description": "Signature cell, a button: film with sprockets, a 16:10 plate render, edge-printed number, grease box on hover or focus, hint beneath.",
+      "html": "<div class=\"ds-cell\"><button class=\"ds-film\" type=\"button\"><svg class=\"ds-grease\" viewBox=\"0 0 100 100\" preserveAspectRatio=\"none\"><path d=\"M4 6 C30 3 70 4 97 5 C98 35 97 68 96 95 C66 97 34 96 3 94 C2 64 3 34 5 3\" vector-effect=\"non-scaling-stroke\"/></svg><span class=\"ds-frame\"></span><span class=\"ds-edge\"><svg width=\"5\" height=\"7\" viewBox=\"0 0 6 8\"><path d=\"M0 0 L6 4 L0 8 Z\" fill=\"currentColor\"/></svg>2</span></button><p class=\"ds-hint\"><strong>White</strong>Dark specks here are dead pixels.</p></div>",
+      "css": ".ds-cell { width: 180px; background: #f5f5f3; font-family: Archivo, Arial, sans-serif; } .ds-film { appearance: none; display: block; width: 100%; border: 0; border-radius: 0; text-align: left; cursor: pointer; position: relative; padding: 24px 10px 38px; background: #111111; } .ds-film::before, .ds-film::after { content: \"\"; position: absolute; left: 4px; right: 4px; height: 7px; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='7'%3E%3Crect x='5' width='10' height='7' rx='1.5' fill='%23f5f5f3'/%3E%3C/svg%3E\"); background-size: 20px 7px; background-repeat: space no-repeat; } .ds-film::before { top: 8px; } .ds-film::after { bottom: 8px; } .ds-frame { display: block; aspect-ratio: 16 / 10; background: #ffffff; } .ds-edge { position: absolute; left: 10px; bottom: 16px; display: inline-flex; align-items: center; gap: 5px; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 13px; line-height: 1; color: #bcbcb7; font-variant-numeric: tabular-nums; } .ds-hint { margin: 0; padding: 9px 10px 0; font-size: 12.5px; line-height: 1.38; color: #5b5b57; } .ds-hint strong { display: block; margin-bottom: 2px; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 16px; line-height: 1.15; color: #1a1a19; } .ds-grease { position: absolute; top: 16px; left: 2px; width: calc(100% - 4px); height: calc(100% - 46px); transform: rotate(-1.2deg); overflow: visible; pointer-events: none; fill: none; stroke: #e0401c; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity 140ms cubic-bezier(0.16,1,0.3,1); } .ds-film:hover .ds-grease, .ds-film:focus-visible .ds-grease { opacity: 1; } .ds-film:focus-visible { outline: 2px solid #e0401c; outline-offset: 2px; }"
     },
     {
       "name": "Plate Chip",
@@ -114,6 +389,14 @@
       "description": "In-test label over the plate: edge-printed number, plate name, hint.",
       "html": "<div class=\"ds-chip\"><strong><span class=\"ds-chip-no\">6</span> Stuck pixel</strong><span class=\"ds-chip-hint\">A stuck pixel keeps its colour while the field blinks.</span></div>",
       "css": ".ds-chip { display: inline-grid; gap: 5px; max-width: 440px; padding: 11px 14px 12px; border-radius: 3px; background: #111111; color: #f5f5f3; box-shadow: 0 2px 10px -2px rgba(0,0,0,0.45); font-family: Archivo, Arial, sans-serif; } .ds-chip strong { display: flex; align-items: baseline; gap: 10px; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 600; font-size: 19px; line-height: 1.1; } .ds-chip-no { font-size: 15px; color: #bcbcb7; font-variant-numeric: tabular-nums; } .ds-chip-hint { font-size: 14px; line-height: 1.4; color: #d4d4cf; }"
+    },
+    {
+      "name": "Summary Result",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Verdict line with date and screen line in edge print, under a hairline rule.",
+      "html": "<section class=\"ds-result\"><p class=\"ds-verdict\">Problem marked on 1 plate: Black (stuck pixel)</p><p class=\"ds-meta\"><span>15 November 2026</span><span>1440 × 900 at 2× = 2880 × 1800 device pixels, about 60 Hz</span></p></section>",
+      "css": ".ds-result { padding-top: 18px; border-top: 1px solid #d8d8d4; font-family: Archivo, Arial, sans-serif; color: #1a1a19; } .ds-verdict { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.35; } .ds-meta { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 6px 0 0; font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif; font-weight: 500; font-size: 15px; line-height: 1.3; color: #5b5b57; font-variant-numeric: tabular-nums; }"
     }
   ],
   "narrative": {
@@ -128,22 +411,54 @@
       "In test, chrome is film-black, small, and gets out of the way."
     ],
     "rules": [
-      { "name": "The One Meaning Amber Rule", "body": "Amber means \"flashing\" and nothing else. It is the frame-6 tag fill and the 6px dot on the in-test Skip flashing button. When flashing is off or reduced motion makes the plate a still split, the tag drops to the quiet outlined variant and the amber goes away.", "section": "colors" },
-      { "name": "The Grease Is the Hand Rule", "body": "Grease-pencil red is drawn, not filled: strokes, rings, boxes, the one handwritten word, the focus ring. It never fills a surface or a button.", "section": "colors" },
-      { "name": "The Hue-Free Paper Rule", "body": "Paper and its neutrals carry no warmth or tint. Colour on the sheet comes only from the plates and the two marks.", "section": "colors" },
-      { "name": "The Edge Print Rule", "body": "Numbers that count frames or plates, and plate names, use the condensed edge face with tabular figures. Sentences never do.", "section": "typography" },
-      { "name": "The One Word Rule", "body": "The hand face is subset to \"start\" and writes nothing else. Any other handwritten word would fall back to a system cursive.", "section": "typography" },
-      { "name": "The One Registration Rule", "body": "Every frame on the sheet is 16:10 at the same scale, inside the same film padding, on every breakpoint. Strips and phone grids are the same markup.", "section": "layout" },
-      { "name": "The Plate Owns the Screen Rule", "body": "In test, nothing sits on the plate except the chip and dock, and both hide after 3 seconds, returning only on deliberate movement or an edge tap.", "section": "layout" },
-      { "name": "The Flat Sheet Rule", "body": "Nothing on the contact sheet casts a shadow except the one primary button. Shadows are soft and diffuse; never hard offset.", "section": "elevation" }
+      {
+        "name": "The One Meaning Amber Rule",
+        "body": "Amber means \"flashing\" and nothing else. It is the frame-8 tag fill and the 6px dot on the in-test Skip flashing button. When flashing is off or reduced motion makes the plate a still split, the tag drops to the quiet outlined variant and the amber goes away.",
+        "section": "colors"
+      },
+      {
+        "name": "The Grease Is the Hand Rule",
+        "body": "Grease-pencil red is drawn, not filled: strokes, rings, boxes, the one handwritten word, the focus ring. It never fills a surface or a button.",
+        "section": "colors"
+      },
+      {
+        "name": "The Hue-Free Paper Rule",
+        "body": "Paper and its neutrals carry no warmth or tint. Colour on the sheet comes only from the plates and the two marks.",
+        "section": "colors"
+      },
+      {
+        "name": "The Edge Print Rule",
+        "body": "Numbers that count frames or plates, and plate names, use the condensed edge face with tabular figures. Sentences never do.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Word Rule",
+        "body": "The hand face is subset to \"start\" and writes nothing else. Any other handwritten word would fall back to a system cursive.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Registration Rule",
+        "body": "Every frame on the sheet is 16:10 at the same scale, inside the same film padding, on every breakpoint. Strips and phone grids are the same markup.",
+        "section": "layout"
+      },
+      {
+        "name": "The Plate Owns the Screen Rule",
+        "body": "In test, nothing sits on the plate except the chip and dock, and both hide after 3 seconds, returning only on deliberate movement or an edge tap.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Sheet Rule",
+        "body": "Nothing on the contact sheet or summary casts a shadow except the one primary button. Quiet buttons stay flat. Shadows are soft and diffuse; never hard offset.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do render every thumbnail through the same renderer as the test, at one 16:10 scale and registration.",
-      "Do keep amber to its one meaning: the frame-6 flashing tag fill and the 6px dot on Skip flashing.",
+      "Do keep amber to its one meaning: the frame-8 flashing tag fill and the 6px dot on Skip flashing.",
       "Do draw grease-pencil marks as stroked, slightly rotated SVG paths at a 3px non-scaling stroke.",
       "Do set frame numbers, counters and plate names in Barlow Condensed with tabular figures.",
       "Do dress any in-test chrome in film black with edge print, and let it hide.",
-      "Do use the grease-red outline (2px, 3px offset; 2px offset on dock buttons) for every focus state."
+      "Do use the grease-red outline (2px, 3px offset; 2px offset on film frames and dock buttons) for every focus state."
     ],
     "donts": [
       "Don't tint the paper warm or cream; it stays hue-free (paper).",

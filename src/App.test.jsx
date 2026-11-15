@@ -6,6 +6,8 @@ import { media } from "./test/setup.js";
 
 const TOTAL = PATTERNS.length;
 const NO_FLASH = PATTERNS.filter((pattern) => pattern.kind !== "flash");
+// Plate names by position, so the tests follow the plate list.
+const N = (i) => PATTERNS[i].name;
 
 function stage() {
   return document.querySelector(".stage");
@@ -64,7 +66,7 @@ describe("start and stop", () => {
   it("starts on the first plate in full screen and stops back to the intro", () => {
     startTest();
     expect(stage()).toBeInTheDocument();
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
     expect(counter()).toBe(`1 / ${TOTAL}`);
     expect(document.documentElement.requestFullscreen).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button", { name: "Exit full screen" })).toBeInTheDocument();
@@ -78,10 +80,9 @@ describe("start and stop", () => {
   it("restarts from the first plate", () => {
     startTest();
     press("ArrowRight");
-    press("ArrowRight");
     fireEvent.click(screen.getByRole("button", { name: "Stop" }));
     fireEvent.click(screen.getByRole("button", { name: "Start test" }));
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
   });
 });
 
@@ -89,20 +90,33 @@ describe("keyboard", () => {
   it("moves with arrows and space, and wraps around both ends", () => {
     startTest();
     press("ArrowRight");
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
     press("ArrowDown");
-    expect(plateName()).toBe("Red");
+    expect(plateName()).toBe(N(2));
     press(" ");
-    expect(plateName()).toBe("Green");
+    expect(plateName()).toBe(N(3));
     press("ArrowLeft");
     press("ArrowUp");
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
     press("ArrowLeft");
     press("ArrowLeft");
     expect(plateName()).toBe(PATTERNS[TOTAL - 1].name);
     expect(counter()).toBe(`${TOTAL} / ${TOTAL}`);
+    press("ArrowLeft");
     press("ArrowRight");
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(PATTERNS[TOTAL - 1].name);
+  });
+
+  it("finishes on the summary after the last plate", () => {
+    startTest();
+    for (let i = 0; i < TOTAL - 1; i += 1) {
+      press("ArrowRight");
+    }
+    expect(screen.getByRole("button", { name: "Finish" })).toBeInTheDocument();
+    press("ArrowRight");
+    expect(stage()).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Did you see anything?" })).toHaveFocus();
+    expect(document.exitFullscreen).toHaveBeenCalled();
   });
 
   it("ignores keys held with Ctrl, Alt or Meta, but not Shift", () => {
@@ -111,10 +125,10 @@ describe("keyboard", () => {
     press("ArrowRight", { altKey: true });
     press("ArrowRight", { metaKey: true });
     press("Escape", { metaKey: true });
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
     expect(stage()).toBeInTheDocument();
     press("ArrowRight", { shiftKey: true });
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
   });
 
   it("lets Space activate a focused dock button without also advancing", () => {
@@ -122,7 +136,7 @@ describe("keyboard", () => {
     const next = screen.getByRole("button", { name: "Next" });
     next.focus();
     fireEvent.keyDown(next, { key: " " });
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
   });
 
   it("toggles full screen with F and Shift+F", () => {
@@ -158,14 +172,14 @@ describe("pointer", () => {
   it("advances on a primary click", () => {
     startTest();
     tap();
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
   });
 
   it("ignores right and middle clicks and blocks the context menu", () => {
     startTest();
     tap({ button: 2 });
     tap({ button: 1 });
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
     const menu = fireEvent.contextMenu(stage());
     expect(menu).toBe(false);
   });
@@ -175,18 +189,18 @@ describe("pointer", () => {
     pointer("pointerDown", { pointerType: "touch", pointerId: 1, clientX: 400 });
     pointer("pointerDown", { pointerType: "touch", pointerId: 2, isPrimary: false, clientX: 40 });
     pointer("pointerUp", { pointerType: "touch", pointerId: 2, isPrimary: false, clientX: 40 });
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
     // The primary finger still owns the gesture: a 200px swipe left.
     pointer("pointerUp", { pointerType: "touch", pointerId: 1, clientX: 200 });
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
   });
 
   it("goes forward on a swipe left and back on a swipe right", () => {
     startTest();
     swipe(500, 300);
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
     swipe(300, 500);
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
     swipe(300, 500);
     expect(plateName()).toBe(PATTERNS[TOTAL - 1].name);
   });
@@ -196,7 +210,7 @@ describe("pointer", () => {
     swipe(400, 370);
     pointer("pointerDown", { pointerType: "touch", clientX: 400, clientY: 200 });
     pointer("pointerUp", { pointerType: "touch", clientX: 340, clientY: 500 });
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
   });
 
   it("only reveals the HUD on a touch tap near the top edge", () => {
@@ -208,17 +222,17 @@ describe("pointer", () => {
 
     tap({ pointerType: "touch", clientY: 10 });
     expect(stage()).toHaveClass("hud-open");
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
     expect(plateHint()).toBe(PATTERNS[0].hint);
 
     tap({ pointerType: "touch", clientY: window.innerHeight / 2 });
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
   });
 
   it("still advances on a mouse click near the top edge", () => {
     startTest();
     tap({ clientY: 10 });
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
   });
 
   it("drops a gesture when the pointer is cancelled", () => {
@@ -226,7 +240,7 @@ describe("pointer", () => {
     pointer("pointerDown", { pointerType: "touch" });
     pointer("pointerCancel", { pointerType: "touch" });
     pointer("pointerUp", { pointerType: "touch" });
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
   });
 });
 
@@ -279,12 +293,12 @@ describe("HUD and dock", () => {
     next.focus();
     fireEvent.click(next, { detail: 1 });
     expect(next).not.toHaveFocus();
-    expect(plateName()).toBe("White");
+    expect(plateName()).toBe(N(1));
 
     next.focus();
     fireEvent.click(next, { detail: 0 });
     expect(next).toHaveFocus();
-    expect(plateName()).toBe("Red");
+    expect(plateName()).toBe(N(2));
   });
 
   it("does not treat a press on the dock as a plate tap", () => {
@@ -292,7 +306,7 @@ describe("HUD and dock", () => {
     const previous = screen.getByRole("button", { name: "Previous" });
     pointer("pointerDown", { target: previous });
     pointer("pointerUp", { target: previous });
-    expect(plateName()).toBe("Black");
+    expect(plateName()).toBe(N(0));
   });
 
   it("announces the plate once, from the live region only", () => {
@@ -348,6 +362,7 @@ describe("flashing plate", () => {
     expect(screen.queryByRole("button", { name: "Skip flashing" })).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "Stop" }));
+    fireEvent.click(screen.getByRole("button", { name: "Back to start" }));
     expect(screen.getByRole("checkbox", { name: "Include flashing plate" })).not.toBeChecked();
   });
 
@@ -406,9 +421,7 @@ describe("intro copy", () => {
 describe("contact sheet", () => {
   it("shows every plate in order with its name and hint", () => {
     render(<App />);
-    const frames = screen
-      .getAllByRole("list", { name: /^Plates \d+ to \d+$/ })
-      .flatMap((list) => within(list).getAllByRole("listitem"));
+    const frames = within(screen.getByRole("list", { name: "Plates" })).getAllByRole("listitem");
     expect(frames).toHaveLength(TOTAL);
     frames.forEach((frame, i) => {
       expect(frame).toHaveTextContent(PATTERNS[i].name);
@@ -423,6 +436,11 @@ describe("contact sheet", () => {
     const flash = document.querySelectorAll(".cell")[FLASH_PLATE - 1];
     expect(flash).toHaveClass("is-out");
     expect(flash).toHaveTextContent("Left out");
+    const frame = screen.getByRole("button", { name: `Start at plate ${FLASH_PLATE}, ${N(FLASH_PLATE - 1)}` });
+    expect(frame).toHaveAttribute("aria-disabled", "true");
+    expect(frame).toHaveAccessibleDescription(/Left out of the test/);
+    fireEvent.click(frame);
+    expect(stage()).not.toBeInTheDocument();
   });
 
   it("shows the still hint under the flashing frame with reduced motion", () => {
@@ -430,5 +448,123 @@ describe("contact sheet", () => {
     render(<App />);
     const flash = document.querySelectorAll(".cell")[FLASH_PLATE - 1];
     expect(flash).toHaveTextContent(PATTERNS[FLASH_PLATE - 1].stillHint);
+  });
+});
+
+describe("starting from a frame", () => {
+  it("starts the test at the clicked frame in full screen", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: `Start at plate 9, ${N(8)}` }));
+    expect(stage()).toBeInTheDocument();
+    expect(plateName()).toBe(N(8));
+    expect(counter()).toBe(`9 / ${TOTAL}`);
+    expect(document.documentElement.requestFullscreen).toHaveBeenCalledTimes(1);
+  });
+
+  it("lands on the same plate when the flashing plate is left out", () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("checkbox", { name: "Include flashing plate" }));
+    fireEvent.click(screen.getByRole("button", { name: `Start at plate 9, ${N(8)}` }));
+    expect(plateName()).toBe(N(8));
+    expect(counter()).toBe(`8 / ${NO_FLASH.length}`);
+  });
+
+  it("names every frame and reaches them by keyboard", () => {
+    render(<App />);
+    const frames = PATTERNS.map((pattern, i) =>
+      screen.getByRole("button", { name: `Start at plate ${i + 1}, ${pattern.name}` }),
+    );
+    frames.forEach((frame) => expect(frame).not.toHaveAttribute("tabindex", "-1"));
+    frames[3].focus();
+    expect(frames[3]).toHaveFocus();
+  });
+});
+
+describe("summary", () => {
+  function runToSummary() {
+    startTest();
+    for (let i = 0; i < TOTAL; i += 1) {
+      press("ArrowRight");
+    }
+  }
+
+  function frame(i) {
+    return screen.getByRole("button", { name: `Problem on plate ${i + 1}, ${N(i)}` });
+  }
+
+  function verdict() {
+    return document.querySelector(".verdict").textContent;
+  }
+
+  it("is clean until a frame is marked", () => {
+    runToSummary();
+    expect(verdict()).toBe(`Clean: no problems marked on ${TOTAL} plates`);
+    expect(frame(0)).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("lists marked frames with their problem type", () => {
+    runToSummary();
+    const white = PATTERNS.findIndex((pattern) => pattern.id === "white");
+    const gridWhite = PATTERNS.findIndex((pattern) => pattern.id === "grid-white");
+    fireEvent.click(frame(white));
+    fireEvent.click(frame(gridWhite));
+    expect(frame(white)).toHaveAttribute("aria-pressed", "true");
+    fireEvent.change(screen.getByLabelText(`Problem type on ${N(white)}`), { target: { value: "dead" } });
+    fireEvent.change(screen.getByLabelText(`Problem type on ${N(gridWhite)}`), { target: { value: "stuck" } });
+    expect(verdict()).toBe(`Problems marked on 2 plates: ${N(white)} (dead pixel), ${N(gridWhite)} (stuck pixel)`);
+
+    fireEvent.click(frame(gridWhite));
+    expect(verdict()).toBe(`Problem marked on 1 plate: ${N(white)} (dead pixel)`);
+  });
+
+  it("copies a plain-text summary", async () => {
+    const writeText = vi.fn(() => Promise.resolve());
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText } });
+    runToSummary();
+    fireEvent.click(frame(1));
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Copy summary" }));
+    });
+    const text = writeText.mock.calls[0][0];
+    expect(text).toMatch(/^Dead pixel tester result\n/);
+    expect(text).toContain(`Result: Problem marked on 1 plate: ${N(1)}`);
+    expect(text).toMatch(/Screen: .*device pixels/);
+    expect(text).toContain(`Plates checked (${TOTAL} of ${TOTAL})`);
+    expect(screen.getByRole("status")).toHaveTextContent(/Copied/);
+  });
+
+  it("shows plates the run did not reach as not reached, after a Stop", () => {
+    startTest();
+    press("ArrowRight");
+    press("ArrowRight");
+    fireEvent.click(screen.getByRole("button", { name: "Stop" }));
+    expect(screen.getByRole("heading", { name: "Did you see anything?" })).toBeInTheDocument();
+    expect(frame(5)).toHaveAttribute("aria-disabled", "true");
+    expect(frame(5)).toHaveAccessibleDescription(/stopped before this plate/);
+    fireEvent.click(frame(5));
+    expect(frame(5)).not.toHaveAttribute("aria-pressed");
+    expect(verdict()).toBe(`Clean: no problems marked on the 3 plates seen (of ${TOTAL})`);
+  });
+
+  it("goes back to the start, or runs again from plate 1", () => {
+    runToSummary();
+    fireEvent.click(screen.getByRole("button", { name: "Run again" }));
+    expect(plateName()).toBe(N(0));
+    for (let i = 0; i < TOTAL; i += 1) {
+      press("ArrowRight");
+    }
+    fireEvent.click(screen.getByRole("button", { name: "Back to start" }));
+    expect(screen.getByRole("button", { name: "Start test" })).toHaveFocus();
+  });
+});
+
+describe("grey plates", () => {
+  it("follow black and drive the flashing plate number in the warning", () => {
+    expect(PATTERNS.slice(0, 3).map((pattern) => pattern.color)).toEqual(["#000000", "#0d0d0d", "#1a1a1a"]);
+    render(<App />);
+    expect(screen.getByRole("checkbox", { name: "Include flashing plate" })).toHaveAccessibleDescription(
+      new RegExp(`plate ${FLASH_PLATE} flips`),
+    );
+    expect(FLASH_PLATE).toBe(8);
   });
 });

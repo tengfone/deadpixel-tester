@@ -1,5 +1,10 @@
 export const PATTERNS = [
   { id: "black", name: "Black", kind: "solid", color: "#000000", hint: "Bright specks here are stuck pixels." },
+  // Near-black greys for backlight bleed and IPS glow: code values 13 and 26
+  // of 255 in every channel, i.e. 5.1% and 10.2% signal. Pure black can hide
+  // bleed on some panels; a lifted grey makes uneven edges and corners show.
+  { id: "grey-5", name: "Dark grey 5%", kind: "solid", color: "#0d0d0d", hint: "In a dim room, light pooling at edges or corners is backlight bleed; a glow that moves with your head is IPS glow." },
+  { id: "grey-10", name: "Dark grey 10%", kind: "solid", color: "#1a1a1a", hint: "The field should look even. Brighter clouds near the edges and corners are backlight bleed." },
   { id: "white", name: "White", kind: "solid", color: "#ffffff", hint: "Dark specks here are dead pixels." },
   { id: "red", name: "Red", kind: "solid", color: "#ff0000", hint: "Look for pixels that stay dark or shift toward another primary." },
   { id: "green", name: "Green", kind: "solid", color: "#00ff00", hint: "Look for pixels that stay dark or shift toward another primary." },

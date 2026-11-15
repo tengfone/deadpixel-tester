@@ -3,6 +3,8 @@ import "./App.css";
 import ContactSheet, { EdgeMark } from "./ContactSheet.jsx";
 import Plate from "./Plate.jsx";
 import { FLASH_PLATE, FLASH_SECONDS, PATTERNS } from "./patterns.js";
+import { describeScreen, useScreenInfo } from "./screenInfo.js";
+import Summary from "./Summary.jsx";
 
 const HUD_MS = 3000;
 const EDGE_ZONE = 0.15;
@@ -11,6 +13,9 @@ const MOVE_REVEAL_PX = 8;
 const TAP_SLOP_PX = 12;
 const SWIPE_PX = 48;
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
+// Stopping after seeing at least this many plates goes to the summary;
+// stopping earlier goes straight back to the start.
+export const MIN_SEEN_FOR_SUMMARY = 3;
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(() => Boolean(window.matchMedia?.(REDUCED_MOTION).matches));
@@ -122,6 +127,9 @@ export default function App() {
   // null until the visitor touches the checkbox, so the default keeps
   // following the reduced-motion preference.
   const [flashChoice, setFlashChoice] = useState(null);
+  // The finished run: { plates, seen } while the summary is showing.
+  const [summary, setSummary] = useState(null);
+  const seenPlates = useRef(new Set());
   const hideTimer = useRef(0);
   const touchStart = useRef(null);
   const mouseTravel = useRef({ last: null, distance: 0 });
@@ -130,6 +138,7 @@ export default function App() {
   const returnFocus = useRef(false);
 
   const reducedMotion = useReducedMotion();
+  const screenInfo = useScreenInfo();
   const includeFlash = flashChoice ?? !reducedMotion;
   const plates = useMemo(
     () => (includeFlash ? PATTERNS : PATTERNS.filter((item) => item.kind !== "flash")),
@@ -138,6 +147,7 @@ export default function App() {
   const pattern = plates[index] ?? plates[0];
   const hint = reducedMotion && pattern.stillHint ? pattern.stillHint : pattern.hint;
   const warning = flashWarning(includeFlash, reducedMotion);
+  const last = index === plates.length - 1;
 
   const armHide = useCallback(() => {
     window.clearTimeout(hideTimer.current);
@@ -154,15 +164,29 @@ export default function App() {
     armHide();
   }, [armHide]);
 
+  // Ends the run on the summary screen.
+  const finish = useCallback(() => {
+    window.clearTimeout(hideTimer.current);
+    setSummary({ plates, seen: new Set(seenPlates.current) });
+    setRunning(false);
+    setHudOpen(true);
+    exitFs();
+  }, [plates]);
+
+  // Forward from the last plate finishes the run; back from the first wraps.
   const step = useCallback(
     (delta) => {
       const count = plates.length;
-      setIndex((current) => (current + delta + count) % count);
+      if (delta > 0 && index === count - 1) {
+        finish();
+        return;
+      }
+      setIndex((index + delta + count) % count);
       setLabelOn(true);
       setHudOpen(true);
       armHide();
     },
-    [armHide, plates.length],
+    [armHide, finish, index, plates.length],
   );
 
   // Drop the flashing plate mid-test and land on the plate that followed it.
@@ -186,23 +210,54 @@ export default function App() {
   }, []);
 
   const stop = useCallback(() => {
+    if (seenPlates.current.size >= MIN_SEEN_FOR_SUMMARY) {
+      finish();
+      return;
+    }
     window.clearTimeout(hideTimer.current);
     returnFocus.current = true;
     setRunning(false);
     setHudOpen(true);
     exitFs();
+  }, [finish]);
+
+  // Starts the run at a plate index (0 for Start test, or a frame's plate).
+  const startAt = useCallback(
+    (at) => {
+      requestFs();
+      // Freeze the choice so a preference change mid-test cannot reshuffle plates.
+      setFlashChoice(includeFlash);
+      seenPlates.current = new Set();
+      setSummary(null);
+      setIndex(at);
+      setRunning(true);
+      setLabelOn(true);
+      setHudOpen(true);
+      armHide();
+    },
+    [armHide, includeFlash],
+  );
+
+  const startAtPlate = useCallback(
+    (target) => {
+      const at = plates.findIndex((item) => item.id === target.id);
+      if (at !== -1) {
+        startAt(at);
+      }
+    },
+    [plates, startAt],
+  );
+
+  const backToStart = useCallback(() => {
+    returnFocus.current = true;
+    setSummary(null);
   }, []);
 
-  const start = useCallback(() => {
-    requestFs();
-    // Freeze the choice so a preference change mid-test cannot reshuffle plates.
-    setFlashChoice(includeFlash);
-    setIndex(0);
-    setRunning(true);
-    setLabelOn(true);
-    setHudOpen(true);
-    armHide();
-  }, [armHide, includeFlash]);
+  useEffect(() => {
+    if (running) {
+      seenPlates.current.add(pattern.id);
+    }
+  }, [running, pattern.id]);
 
   useEffect(() => {
     if (!running) {
@@ -261,11 +316,11 @@ export default function App() {
   useEffect(() => () => window.clearTimeout(hideTimer.current), []);
 
   useEffect(() => {
-    if (!running && returnFocus.current) {
+    if (!running && !summary && returnFocus.current) {
       returnFocus.current = false;
       startButton.current?.focus();
     }
-  }, [running]);
+  }, [running, summary]);
 
   const onPointerDown = (event) => {
     // Only the primary button of the primary pointer starts a tap or swipe:
@@ -326,7 +381,17 @@ export default function App() {
 
   return (
     <>
-      {!running && (
+      {!running && summary && (
+        <Summary
+          plates={summary.plates}
+          seen={summary.seen}
+          screenInfo={screenInfo}
+          onRunAgain={() => startAt(0)}
+          onBack={backToStart}
+        />
+      )}
+
+      {!running && !summary && (
         <main className="intro">
           <header className="head">
             <div className="head-copy">
@@ -338,7 +403,7 @@ export default function App() {
             </div>
             <div className="head-side">
               <div className="actions">
-                <button ref={startButton} className="start" type="button" onClick={start}>
+                <button ref={startButton} className="start" type="button" onClick={() => startAt(0)}>
                   Start test
                 </button>
                 <span className="plate-count">{plates.length} plates</span>
@@ -365,7 +430,7 @@ export default function App() {
             </div>
           </header>
 
-          <ContactSheet includeFlash={includeFlash} reducedMotion={reducedMotion} />
+          <ContactSheet includeFlash={includeFlash} reducedMotion={reducedMotion} onStartAt={startAtPlate} />
 
           <ul className="controls" aria-label="Controls">
             <li>
@@ -378,10 +443,14 @@ export default function App() {
               screen.
               In full screen, <kbd>Esc</kbd> leaves full screen; press <kbd>Esc</kbd> again to stop.
             </li>
-            <li>The controls hide so they do not cover the pixels you are checking.</li>
+            <li>
+              The controls hide so they do not cover the pixels. At the end, mark what you saw
+              and copy a summary.
+            </li>
           </ul>
           <footer className="foot">
             <span>Teng Fone</span>
+            <span className="foot-screen">This screen: {describeScreen(screenInfo.screen, screenInfo.hz)}</span>
             <a href="https://github.com/tengfone/deadpixel-tester">Source on GitHub</a>
           </footer>
         </main>
@@ -424,8 +493,8 @@ export default function App() {
             <div className="count">
               {index + 1} / {plates.length}
             </div>
-            <DockButton ref={nextButton} aria-label="Next" onClick={() => step(1)}>
-              <span className="dock-long">Next</span>
+            <DockButton ref={nextButton} aria-label={last ? "Finish" : "Next"} onClick={() => step(1)}>
+              <span className="dock-long">{last ? "Finish" : "Next"}</span>
               <span className="dock-short" aria-hidden="true">
                 <Chevron direction="right" />
               </span>
